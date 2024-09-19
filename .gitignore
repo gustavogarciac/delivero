@@ -7,6 +7,8 @@
 # JWT
 private_key.pem
 public_key.pem
+private_key_base64.txt
+public_key_base64.txt
 
 # Logs
 logs
