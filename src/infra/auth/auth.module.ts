@@ -1,7 +1,11 @@
 import { Module } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
+<<<<<<< HEAD
 import { EnvModule } from "../env/env.module";
+=======
+import { ConfigService } from "@nestjs/config";
+>>>>>>> 037abf3 (feat: env module)
 import { EnvService } from "../env/env.service";
 
 @Module({
