@@ -5,8 +5,8 @@ export interface DeliveryManProps {
   name: string
   email: string
   password: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date | null
+  updatedAt?: Date | null
 }
 
 export class DeliveryMan extends Entity<DeliveryManProps> {
@@ -26,8 +26,18 @@ export class DeliveryMan extends Entity<DeliveryManProps> {
     return this.props.updatedAt
   }
 
-  static create(props: DeliveryManProps, id?: UniqueEntityId) {
-    const deliveryMan = new DeliveryMan(props, id)
+  static create({
+    name,
+    email, 
+    password,
+  }: DeliveryManProps, id?: UniqueEntityId) {
+    const deliveryMan = new DeliveryMan({
+      name,
+      email,
+      password,
+      createdAt: new Date(),
+      updatedAt: null
+    }, id)
 
     return deliveryMan
   }
