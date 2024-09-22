@@ -13,7 +13,7 @@ type CreateDeliveryManUseCaseResponse = Either<Error, { deliveryMan: DeliveryMan
 export class CreateDeliveryManUseCase {
   constructor(private deliveryMenRepository: DeliveryMenRepository) {}
 
-  async handle({
+  async execute({
     email,
     name,
     password
@@ -29,6 +29,8 @@ export class CreateDeliveryManUseCase {
       name,
       password,
     })
+
+    await this.deliveryMenRepository.create(deliveryMan)
 
     return right({ deliveryMan })
   }
