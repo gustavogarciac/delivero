@@ -13,7 +13,7 @@ describe("Delete Delivery Man Use Case", async () => {
   })
 
   it("should be able to delete a delivery man", async () => {
-    const deliveryMan = makeDeliveryMan({ email: "johndoe@example.com" })
+    const deliveryMan = makeDeliveryMan()
 
     await deliveryMenRepository.items.push(deliveryMan)
 
