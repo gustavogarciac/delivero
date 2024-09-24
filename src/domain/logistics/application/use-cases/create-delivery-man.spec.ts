@@ -1,6 +1,7 @@
 import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
 import { CreateDeliveryManUseCase } from "./create-delivery-man"
 import { makeDeliveryMan } from "test/factories/make-delivery-man"
+import { BadRequestError } from "@/core/errors/bad-request-error"
 
 let deliveryMenRepository: InMemoryDeliveryMenRepository
 let sut: CreateDeliveryManUseCase
@@ -18,8 +19,6 @@ describe("Create Delivery Man Use Case", async () => {
 
     expect(result.isRight()).toBeTruthy()
 
-    console.log(deliveryMenRepository.items)
-
     expect(deliveryMenRepository.items.length).toEqual(1)
   })
 
@@ -32,5 +31,7 @@ describe("Create Delivery Man Use Case", async () => {
     const result = await sut.execute(secondDeliveryMan)
 
     expect(result.isLeft()).toBeTruthy()
+
+    expect(result.value).toBeInstanceOf(BadRequestError)
   })
 })
