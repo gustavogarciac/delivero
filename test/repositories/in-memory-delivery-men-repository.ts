@@ -29,4 +29,12 @@ export class InMemoryDeliveryMenRepository implements DeliveryMenRepository {
 
     this.items.splice(index, 1)
   }
+
+  async save(deliveryMan: DeliveryMan): Promise<void> {
+    const index = this.items.findIndex((item) => item.id === deliveryMan.id)
+
+    this.items.splice(index, 1, deliveryMan)
+
+    this.items = [...this.items, deliveryMan]
+  }
 }

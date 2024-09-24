@@ -27,6 +27,25 @@ export class DeliveryMan extends Entity<DeliveryManProps> {
     return this.props.updatedAt
   }
 
+  touch() {
+    this.props.updatedAt = new Date()
+  }
+
+  set name(name: string) {
+    this.props.name = name
+    this.touch()
+  }
+
+  set cpf(cpf: Cpf) {
+    this.props.cpf = cpf
+    this.touch()
+  }
+
+  set password(password: string) {
+    this.props.password = password
+    this.touch()
+  }
+
   static create({
     name,
     cpf, 
