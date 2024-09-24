@@ -1,9 +1,10 @@
 import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
+import { Cpf } from "./value-objects/cpf";
 
 export interface DeliveryManProps {
   name: string
-  email: string
+  cpf: Cpf
   password: string
   createdAt?: Date | null
   updatedAt?: Date | null
@@ -13,8 +14,8 @@ export class DeliveryMan extends Entity<DeliveryManProps> {
   get name() {
     return this.props.name
   }
-  get email() {
-    return this.props.email
+  get cpf() {
+    return this.props.cpf
   }
   get password() {
     return this.props.password
@@ -28,12 +29,12 @@ export class DeliveryMan extends Entity<DeliveryManProps> {
 
   static create({
     name,
-    email, 
+    cpf, 
     password,
   }: DeliveryManProps, id?: UniqueEntityId) {
     const deliveryMan = new DeliveryMan({
       name,
-      email,
+      cpf,
       password,
       createdAt: new Date(),
       updatedAt: null

@@ -1,5 +1,6 @@
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { DeliveryMan, DeliveryManProps } from "@/domain/logistics/enterprise/entities/delivery-man";
+import { Cpf } from "@/domain/logistics/enterprise/entities/value-objects/cpf";
 import { faker } from "@faker-js/faker"
 
 export function makeDeliveryMan(
@@ -8,7 +9,7 @@ export function makeDeliveryMan(
 ) {
   const deliveryMan = DeliveryMan.create(
     {
-      email: faker.internet.email(),
+      cpf: Cpf.create(),
       name: faker.person.fullName(),
       password: faker.internet.password(),
       createdAt: faker.date.past(),

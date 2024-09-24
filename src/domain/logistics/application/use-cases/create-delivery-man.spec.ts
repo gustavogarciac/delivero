@@ -2,6 +2,7 @@ import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-deliv
 import { CreateDeliveryManUseCase } from "./create-delivery-man"
 import { makeDeliveryMan } from "test/factories/make-delivery-man"
 import { BadRequestError } from "@/core/errors/bad-request-error"
+import { Cpf } from "../../enterprise/entities/value-objects/cpf"
 
 let deliveryMenRepository: InMemoryDeliveryMenRepository
 let sut: CreateDeliveryManUseCase
@@ -13,7 +14,7 @@ describe("Create Delivery Man Use Case", async () => {
   })
 
   it("should be able to create a delivery man", async () => {
-    const deliveryMan = makeDeliveryMan({ email: "johndoe@example.com" })
+    const deliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
 
     const result = await sut.execute(deliveryMan)
 
@@ -22,9 +23,9 @@ describe("Create Delivery Man Use Case", async () => {
     expect(deliveryMenRepository.items.length).toEqual(1)
   })
 
-  it("should not create a delivery man with an existing email", async () => {
-    const deliveryMan = makeDeliveryMan({ email: 'johndoe@example.com'})
-    const secondDeliveryMan = makeDeliveryMan({ email: 'johndoe@example.com'})
+  it("should not create a delivery man with an existing cpf", async () => {
+    const deliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
+    const secondDeliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
 
     await deliveryMenRepository.items.push(deliveryMan)
 
