@@ -3,14 +3,17 @@ import { CreateDeliveryManUseCase } from "./create-delivery-man"
 import { makeDeliveryMan } from "test/factories/make-delivery-man"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../enterprise/entities/value-objects/cpf"
+import { FakeHasher } from "test/cryptography/fake-hasher"
 
 let deliveryMenRepository: InMemoryDeliveryMenRepository
+let hasher: FakeHasher
 let sut: CreateDeliveryManUseCase
 
 describe("Create Delivery Man Use Case", async () => {
   beforeEach(async () => {
     deliveryMenRepository = new InMemoryDeliveryMenRepository()
-    sut = new CreateDeliveryManUseCase(deliveryMenRepository)
+    hasher = new FakeHasher()
+    sut = new CreateDeliveryManUseCase(deliveryMenRepository, hasher)
   })
 
   it("should be able to create a delivery man", async () => {
@@ -27,12 +30,26 @@ describe("Create Delivery Man Use Case", async () => {
     const deliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
     const secondDeliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
 
-    await deliveryMenRepository.items.push(deliveryMan)
+    deliveryMenRepository.items.push(deliveryMan)
 
     const result = await sut.execute(secondDeliveryMan)
 
     expect(result.isLeft()).toBeTruthy()
 
     expect(result.value).toBeInstanceOf(BadRequestError)
+  })
+
+  it("should hash the password before saving", async () => {
+    const result = await sut.execute({
+      cpf: Cpf.create("40171993055"),
+      name: "John Doe",
+      password: "password"
+    })
+    
+    expect(result.isRight()).toBeTruthy()
+
+    const hashedPassword = await hasher.hash("password")
+
+    expect(deliveryMenRepository.items[0].password).toEqual(hashedPassword)
   })
 })

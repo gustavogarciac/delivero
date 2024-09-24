@@ -3,6 +3,7 @@ import { DeliveryMenRepository } from "../repositories/delivery-man-repository"
 import { DeliveryMan } from "../../enterprise/entities/delivery-man"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../enterprise/entities/value-objects/cpf"
+import { Hasher } from "../cryptography/hasher"
 
 interface CreateDeliveryManUseCaseRequest {
   name: string
@@ -13,7 +14,7 @@ interface CreateDeliveryManUseCaseRequest {
 type CreateDeliveryManUseCaseResponse = Either<BadRequestError, { deliveryMan: DeliveryMan }>
 
 export class CreateDeliveryManUseCase {
-  constructor(private deliveryMenRepository: DeliveryMenRepository) {}
+  constructor(private deliveryMenRepository: DeliveryMenRepository, private hasher: Hasher) {}
 
   async execute({
     cpf,
@@ -29,7 +30,7 @@ export class CreateDeliveryManUseCase {
     const deliveryMan = DeliveryMan.create({
       cpf,
       name,
-      password,
+      password: await this.hasher.hash(password),
     })
 
     await this.deliveryMenRepository.create(deliveryMan)
