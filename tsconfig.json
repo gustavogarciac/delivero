@@ -9,7 +9,6 @@
     "target": "es2022",
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
@@ -21,6 +20,9 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": [
+      "vitest/globals"
+    ]
   }
 }
