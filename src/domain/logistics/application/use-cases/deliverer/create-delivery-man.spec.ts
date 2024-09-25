@@ -2,7 +2,7 @@ import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-deliv
 import { CreateDeliveryManUseCase } from "./create-delivery-man"
 import { makeDeliveryMan } from "test/factories/make-delivery-man"
 import { BadRequestError } from "@/core/errors/bad-request-error"
-import { Cpf } from "../../enterprise/entities/value-objects/cpf"
+import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { FakeHasher } from "test/cryptography/fake-hasher"
 
 let deliveryMenRepository: InMemoryDeliveryMenRepository

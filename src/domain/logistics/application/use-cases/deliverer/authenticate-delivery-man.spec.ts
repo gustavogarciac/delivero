@@ -1,6 +1,6 @@
 import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
 import { makeDeliveryMan } from "test/factories/make-delivery-man"
-import { Cpf } from "../../enterprise/entities/value-objects/cpf"
+import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { AuthenticateDeliveryManUseCase } from "./authenticate-delivery-man"
 import { FakeHasher } from "test/cryptography/fake-hasher"
 import { FakeEncrypter } from "test/cryptography/fake-encrypter"

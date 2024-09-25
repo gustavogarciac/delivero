@@ -3,7 +3,7 @@ import { makeDeliveryMan } from "test/factories/make-delivery-man"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
 import { UpdateDeliveryManUseCase } from "./update-delivery-man"
 import { FakeHasher } from "test/cryptography/fake-hasher"
-import { Cpf } from "../../enterprise/entities/value-objects/cpf"
+import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 
 let deliveryMenRepository: InMemoryDeliveryMenRepository
 let hasher: FakeHasher
