@@ -1,6 +1,6 @@
 import { Either, left, right } from "@/core/either"
 import { DeliveryMenRepository } from "../../repositories/delivery-man-repository"
-import { DeliveryMan } from "../../../enterprise/entities/delivery-man"
+import { DeliveryMan } from "../../../enterprise/entities/deliverer"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"

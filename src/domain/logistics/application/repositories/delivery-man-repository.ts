@@ -1,5 +1,5 @@
 import { PaginationParams } from "@/core/repositories/pagination";
-import { DeliveryMan } from "../../enterprise/entities/delivery-man";
+import { DeliveryMan } from "../../enterprise/entities/deliverer";
 
 export abstract class DeliveryMenRepository {
   abstract findByCpf(cpf: string): Promise<DeliveryMan | null>
