@@ -1,14 +1,14 @@
 import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
-enum VehicleType {
+export enum VehicleType {
   CAR = 'car',
   MOTORCYCLE = 'motorcycle',
   TRUCK = 'truck',
   BIKE = 'bike',
 }
 
-interface VehicleProps {
+export interface VehicleProps {
   plate: string
   model: string
   year: number

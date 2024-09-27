@@ -1,5 +1,5 @@
 import { Either, left, right } from "@/core/either"
-import { DeliveryMenRepository } from "../../repositories/delivery-man-repository"
+import { DeliveryMenRepository } from "../../repositories/deliverers-repository"
 import { DeliveryMan } from "../../../enterprise/entities/deliverer"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../../enterprise/entities/value-objects/cpf"

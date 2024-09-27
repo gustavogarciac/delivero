@@ -69,8 +69,8 @@ import { Geolocalization } from "./value-objects/geolocalization";
 // }
 
 
-interface DelivererProps {
-  vehicle: Vehicle
+export interface DelivererProps {
+  vehicle?: Vehicle | null
   isAvailable: boolean
   // geo: Geolocation // TODO: STUDY GEOLOCATION OBJECT
   geo: Geolocalization
@@ -82,8 +82,8 @@ interface DelivererProps {
 export class Deliverer extends User {
   private delivererProps: DelivererProps
 
-  get vehicle() {
-    return this.delivererProps.vehicle
+  get vehicle(): Vehicle | null {
+    return this.delivererProps.vehicle ?? null
   }
 
   get isAvailable() {
@@ -108,6 +108,10 @@ export class Deliverer extends User {
 
   get updatedAt() {
     return this.delivererProps.updatedAt
+  }
+
+  set vehicle(vehicle: Vehicle) {
+    this.delivererProps.vehicle = vehicle
   }
 
   protected constructor(delivererProps: DelivererProps, userProps: UserProps, id?: UniqueEntityId) {

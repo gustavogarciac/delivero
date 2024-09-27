@@ -1,22 +1,21 @@
 import { Either, left, right } from "@/core/either"
-import { DeliveryMenRepository } from "../../repositories/delivery-man-repository"
-import { DeliveryMan } from "../../../enterprise/entities/deliverer"
+import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { Hasher } from "../../cryptography/hasher"
 import { Encrypter } from "../../cryptography/encrypter"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
 
-interface AuthenticateDeliveryManUseCaseRequest {
+interface AuthenticateDelivererUseCaseRequest {
   cpf: Cpf
   password: string
 }
 
-type AuthenticateDeliveryManUseCaseResponse = Either<ResourceNotFoundError | BadRequestError, { accessToken: string }>
+type AuthenticateDelivererUseCaseResponse = Either<ResourceNotFoundError | BadRequestError, { accessToken: string }>
 
-export class AuthenticateDeliveryManUseCase {
+export class AuthenticateDelivererUseCase {
   constructor(
-    private deliveryMenRepository: DeliveryMenRepository,
+    private deliverersRepository: DeliverersRepository,
     private hasher: Hasher, 
     private encrypter: Encrypter
   ) {}
@@ -24,21 +23,21 @@ export class AuthenticateDeliveryManUseCase {
   async execute({
     cpf,
     password
-  } : AuthenticateDeliveryManUseCaseRequest): Promise<AuthenticateDeliveryManUseCaseResponse> {
-    const deliveryMan = await this.deliveryMenRepository.findByCpf(cpf.value)
+  } : AuthenticateDelivererUseCaseRequest): Promise<AuthenticateDelivererUseCaseResponse> {
+    const deliverer = await this.deliverersRepository.findByCpf(cpf.value)
 
-    if(!deliveryMan) {
+    if(!deliverer) {
       return left(new ResourceNotFoundError)
     }
 
-    const passwordMatch = await this.hasher.compare(password, deliveryMan.password)
+    const passwordMatch = await this.hasher.compare(password, deliverer.password)
 
     if (!passwordMatch) {
       return left(new BadRequestError)
     }
     
     const accessToken = await this.encrypter.encrypt({
-      sub: deliveryMan.id.toString(),
+      sub: deliverer.id.toString(),
     })
 
     return right({

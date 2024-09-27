@@ -10,8 +10,17 @@ export class Role {
     return this.type === Roles.ADMIN;
   }
 
-  constructor(type: Roles) {
-    this.type = type;
+  constructor(type: "admin" | "deliverer") {
+    switch (type) {
+      case Roles.ADMIN:
+        this.type = Roles.ADMIN;
+        break;
+      case Roles.DELIVERER:
+        this.type = Roles.DELIVERER;
+        break;
+      default:
+        throw new Error('Invalid role type');
+    }
   }
 
   static admin() {

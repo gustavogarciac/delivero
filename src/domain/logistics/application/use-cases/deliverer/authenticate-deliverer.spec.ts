@@ -1,31 +1,31 @@
-import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
-import { makeDeliveryMan } from "test/factories/make-delivery-man"
 import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
-import { AuthenticateDeliveryManUseCase } from "./authenticate-delivery-man"
 import { FakeHasher } from "test/cryptography/fake-hasher"
 import { FakeEncrypter } from "test/cryptography/fake-encrypter"
 import { BadRequestError } from "@/core/errors/bad-request-error"
+import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
+import { AuthenticateDelivererUseCase } from "./authenticate-deliverer"
+import { makeDeliverer } from "test/factories/make-deliverer"
 
-let deliveryMenRepository: InMemoryDeliveryMenRepository
+let delivererRepository: InMemoryDelivererRepository
 let fakeHasher: FakeHasher
 let fakeEncrypter: FakeEncrypter
-let sut: AuthenticateDeliveryManUseCase
+let sut: AuthenticateDelivererUseCase
 
-describe("Authenticate Delivery Man Use Case", async () => {
+describe("Authenticate Deliverer Use Case", async () => {
   beforeEach(async () => {
-    deliveryMenRepository = new InMemoryDeliveryMenRepository()
+    delivererRepository = new InMemoryDelivererRepository()
     fakeHasher = new FakeHasher()
     fakeEncrypter = new FakeEncrypter()
-    sut = new AuthenticateDeliveryManUseCase(deliveryMenRepository, fakeHasher, fakeEncrypter)
+    sut = new AuthenticateDelivererUseCase(delivererRepository, fakeHasher, fakeEncrypter)
   })
 
   it("should be able to authenticate a delivery man", async () => {
-    const deliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055"), password: await fakeHasher.hash("password") })
+    const deliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055"), password: await fakeHasher.hash("password") })
 
-    await deliveryMenRepository.items.push(deliveryMan)
+    await delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: deliveryMan.cpf,
+      cpf: deliverer.cpf,
       password: "password"
     })
 
@@ -37,12 +37,12 @@ describe("Authenticate Delivery Man Use Case", async () => {
   })
 
   it("should not be able to authenticate a delivery man with wrong password", async () => {
-    const deliveryMan = makeDeliveryMan()
+    const deliverer = makeDeliverer()
 
-    await deliveryMenRepository.items.push(deliveryMan)
+    await delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: deliveryMan.cpf,
+      cpf: deliverer.cpf,
       password: "wrong-password"
     })
 
