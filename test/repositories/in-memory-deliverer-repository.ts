@@ -21,6 +21,14 @@ export class InMemoryDelivererRepository implements DeliverersRepository {
     return deliverer
   }
 
+  async findByEmail(email: string): Promise<Deliverer | null> {
+    const deliverer = this.items.find((deliverer) => deliverer.email === email)
+
+    if(!deliverer) return null
+
+    return deliverer
+  }
+
   async findMany(params: PaginationParams): Promise<{ items: Deliverer[]; total?: number }> {
     const { page = 1, perPage = 10, count = false, query } = params;
 

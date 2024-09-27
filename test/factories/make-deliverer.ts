@@ -21,7 +21,7 @@ export function makeDeliverer(
     {
       deliveriesCount: faker.number.int(),
       isAvailable: faker.datatype.boolean(),
-      rating: faker.number.float({
+      rating: faker.number.int({
         min: 0,
         max: 5,
       }),

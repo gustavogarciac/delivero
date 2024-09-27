@@ -51,12 +51,12 @@ export abstract class User extends Entity<UserProps> {
     return this.props.updatedAt;
   }
 
-  get status() {
-    return this.props.status;
+  get status(): Status | null {
+    return this.props.status ?? null;
   }
   
-  get role() {
-    return this.props.role;
+  get role(): Role | null {
+    return this.props.role ?? null;
   }
 
   isAdmin() {
@@ -66,8 +66,46 @@ export abstract class User extends Entity<UserProps> {
     return this.props.role.isAdmin();
   }
 
+  set name(name: string) {
+    this.props.name = name;
+    this.touch();
+  }
+
+  set email(email: string) {
+    this.props.email = email;
+    this.touch();
+  }
+
+  set password(password: string) {
+    this.props.password = password;
+    this.touch();
+  }
+
+  set cpf(cpf: Cpf) {
+    this.props.cpf = cpf;
+    this.touch();
+  }
+
+  set phone(phone: string) {
+    this.props.phone = phone;
+    this.touch();
+  }
+
+  set status(status: Status) {
+    this.props.status = status;
+    this.touch();
+  }
+
+  set role(role: Role) {
+    this.props.role = role;
+    this.touch();
+  }
+
+  touch() {
+    this.props.updatedAt = new Date();
+  }
+
   protected constructor(props: UserProps, id?: UniqueEntityId) {
     super(props, id);
-    // Não precisa reatribuir _id e props novamente, pois já é feito na superclasse.
   }
 }

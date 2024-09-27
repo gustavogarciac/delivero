@@ -18,6 +18,14 @@ export class Geolocalization {
     return this.props.longitude
   }
 
+  set latitude(latitude: number) {
+    this.props.latitude = latitude
+  }
+
+  set longitude(longitude: number) {
+    this.props.longitude = longitude
+  }
+
   static create(props: GeolocalizationProps): Geolocalization {
     return new Geolocalization(props)
   }
