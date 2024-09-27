@@ -1,23 +1,23 @@
-import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
-import { makeDeliveryMan } from "test/factories/make-delivery-man"
-import { DeleteDeliveryManUseCase } from "./delete-delivery-man"
+import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
+import { DeleteDelivererUseCase } from "./delete-delivery-man"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
+import { makeDeliverer } from "test/factories/make-deliverer"
 
-let deliveryMenRepository: InMemoryDeliveryMenRepository
-let sut: DeleteDeliveryManUseCase
+let deliveryMenRepository: InMemoryDelivererRepository
+let sut: DeleteDelivererUseCase
 
 describe("Delete Delivery Man Use Case", async () => {
   beforeEach(async () => {
-    deliveryMenRepository = new InMemoryDeliveryMenRepository()
-    sut = new DeleteDeliveryManUseCase(deliveryMenRepository)
+    deliveryMenRepository = new InMemoryDelivererRepository()
+    sut = new DeleteDelivererUseCase(deliveryMenRepository)
   })
 
   it("should be able to delete a delivery man", async () => {
-    const deliveryMan = makeDeliveryMan()
+    const deliverer = makeDeliverer()
 
-    await deliveryMenRepository.items.push(deliveryMan)
+    await deliveryMenRepository.items.push(deliverer)
 
-    const result = await sut.execute({ deliveryManId: deliveryMan.id.toString() })
+    const result = await sut.execute({ delivererId: deliverer.id.toString() })
 
     expect(result.isRight()).toBeTruthy()
 
@@ -25,7 +25,7 @@ describe("Delete Delivery Man Use Case", async () => {
   })
 
   it("should throw an error if delivery man does not exist", async () => {
-    const result = await sut.execute({ deliveryManId: "non-existing-id" })
+    const result = await sut.execute({ delivererId: "non-existing-id" })
 
     expect(result.isLeft()).toBeTruthy()
 
