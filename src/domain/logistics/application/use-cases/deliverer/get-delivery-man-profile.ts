@@ -1,26 +1,26 @@
 import { Either, left, right } from "@/core/either"
-import { DeliveryMenRepository } from "../../repositories/deliverers-repository"
+import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
 
-interface GetDeliveryManProfileUseCaseRequest {
-  deliveryManId: string
+interface GetDelivererProfileUseCaseRequest {
+  delivererId: string
 }
 
-type GetDeliveryManProfileUseCaseResponse = Either<BadRequestError, { deliveryMan }>
+type GetDelivererProfileUseCaseResponse = Either<BadRequestError, { deliverer }>
 
-export class GetDeliveryManProfileUseCase {
-  constructor(private deliveryMenRepository: DeliveryMenRepository) {}
+export class GetDelivererProfileUseCase {
+  constructor(private deliverersRepository: DeliverersRepository) {}
 
   async execute({
-    deliveryManId,
-  } : GetDeliveryManProfileUseCaseRequest): Promise<GetDeliveryManProfileUseCaseResponse> {
-    const deliveryMan = await this.deliveryMenRepository.findById(deliveryManId)
+    delivererId,
+  } : GetDelivererProfileUseCaseRequest): Promise<GetDelivererProfileUseCaseResponse> {
+    const deliverer = await this.deliverersRepository.findById(delivererId)
 
-    if(!deliveryMan) {
+    if(!deliverer) {
       return left(new ResourceNotFoundError)
     }
 
-    return right({ deliveryMan })
+    return right({ deliverer })
   }
 }

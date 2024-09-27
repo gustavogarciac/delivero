@@ -1,23 +1,21 @@
-import { Either, left, right } from "@/core/either"
-import { DeliveryMenRepository } from "../../repositories/deliverers-repository"
-import { BadRequestError } from "@/core/errors/bad-request-error"
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
+import { Either, right } from "@/core/either"
 import { PaginationParams } from "@/core/repositories/pagination"
-import { DeliveryMan } from "../../../enterprise/entities/deliverer"
+import { Deliverer } from "@/domain/logistics/enterprise/entities/deliverer";
+import { DeliverersRepository } from "../../repositories/deliverers-repository";
 
-type FetchDeliveryMenUseCaseResponse = Either<null, { items: DeliveryMan[]; total?: number  }>
+type FetchDeliverersUseCaseResponse = Either<null, { items: Deliverer[]; total?: number  }>
 
-export class FetchDeliveryMenUseCase {
-  constructor(private deliveryMenRepository: DeliveryMenRepository) {}
+export class FetchDeliverersUseCase {
+  constructor(private deliverersRepository: DeliverersRepository) {}
 
   async execute({
     page,
     perPage,
     count,
     query
-  } : PaginationParams): Promise<FetchDeliveryMenUseCaseResponse> {
-    const deliveryMen = await this.deliveryMenRepository.findMany({ page, perPage, count, query })
+  } : PaginationParams): Promise<FetchDeliverersUseCaseResponse> {
+    const deliverers = await this.deliverersRepository.findMany({ page, perPage, count, query })
 
-    return right(deliveryMen)
+    return right(deliverers)
   }
 }

@@ -1,37 +1,37 @@
-import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
-import { makeDeliveryMan } from "test/factories/make-delivery-man"
+import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
+import { GetDelivererProfileUseCase } from "./get-delivery-man-profile"
+import { makeDeliverer } from "test/factories/make-deliverer"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
-import { GetDeliveryManProfileUseCase } from "./get-delivery-man-profile"
 
-let deliveryMenRepository: InMemoryDeliveryMenRepository
-let sut: GetDeliveryManProfileUseCase
+let deliverersRepository: InMemoryDelivererRepository
+let sut: GetDelivererProfileUseCase
 
 describe("Get Delivery Man Profile Use Case", async () => {
   beforeEach(async () => {
-    deliveryMenRepository = new InMemoryDeliveryMenRepository()
-    sut = new GetDeliveryManProfileUseCase(deliveryMenRepository)
+    deliverersRepository = new InMemoryDelivererRepository()
+    sut = new GetDelivererProfileUseCase(deliverersRepository)
   })
 
   it("should be able to get a delivery man profile", async () => {
-    const deliveryMan = makeDeliveryMan()
+    const deliverer = makeDeliverer()
 
-    await deliveryMenRepository.items.push(deliveryMan)
+    await deliverersRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      deliveryManId: deliveryMan.id.toString(),
+      delivererId: deliverer.id.toString(),
     })
 
     expect(result.isRight()).toBeTruthy()
     expect(result.value).toEqual(expect.objectContaining({
-      deliveryMan: expect.objectContaining({
-        name: deliveryMan.name,
+      deliverer: expect.objectContaining({
+        name: deliverer.name,
       })
     }))
   })
 
   it("should throw an error if delivery man does not exist", async () => {
     const result = await sut.execute({
-      deliveryManId: "non-existing-id",
+      delivererId: "non-existing-id",
     })
 
     expect(result.isLeft()).toBeTruthy()

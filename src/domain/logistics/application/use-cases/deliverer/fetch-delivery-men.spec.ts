@@ -1,21 +1,21 @@
-import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
-import { makeDeliveryMan } from "test/factories/make-delivery-man"
-import { FetchDeliveryMenUseCase } from "./fetch-delivery-men"
+import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
+import { FetchDeliverersUseCase } from "./fetch-delivery-men"
+import { makeDeliverer } from "test/factories/make-deliverer"
 
-let deliveryMenRepository: InMemoryDeliveryMenRepository
-let sut: FetchDeliveryMenUseCase
+let deliverersRepository: InMemoryDelivererRepository
+let sut: FetchDeliverersUseCase
 
 describe("Fetch Delivery Men Use Case", async () => {
   beforeEach(async () => {
-    deliveryMenRepository = new InMemoryDeliveryMenRepository()
-    sut = new FetchDeliveryMenUseCase(deliveryMenRepository)
+    deliverersRepository = new InMemoryDelivererRepository()
+    sut = new FetchDeliverersUseCase(deliverersRepository)
   })
 
   it("should be able to fetch delivery men", async () => {
     for (let i = 0; i <= 22; i++) {
-      const deliveryMan = makeDeliveryMan()
+      const deliveryMan = makeDeliverer()
 
-      await deliveryMenRepository.items.push(deliveryMan)
+      await deliverersRepository.items.push(deliveryMan)
     }
 
     const result = await sut.execute({
@@ -27,16 +27,16 @@ describe("Fetch Delivery Men Use Case", async () => {
     expect(result.isRight()).toBeTruthy()
 
     expect(result.value).toEqual({
-      items: deliveryMenRepository.items.slice(0, 10),
+      items: deliverersRepository.items.slice(0, 10),
       total: 10,
     })
   })
 
   it("should paginate when fetching delivery men", async () => {
     for (let i = 0; i <= 22; i++) {
-      const deliveryMan = makeDeliveryMan()
+      const deliveryMan = makeDeliverer()
 
-      await deliveryMenRepository.items.push(deliveryMan)
+      await deliverersRepository.items.push(deliveryMan)
     }
 
     const result = await sut.execute({
@@ -48,7 +48,7 @@ describe("Fetch Delivery Men Use Case", async () => {
     expect(result.isRight()).toBeTruthy()
 
     expect(result.value).toEqual({
-      items: deliveryMenRepository.items.slice(10, 20),
+      items: deliverersRepository.items.slice(10, 20),
       total: 10,
     })
   })
