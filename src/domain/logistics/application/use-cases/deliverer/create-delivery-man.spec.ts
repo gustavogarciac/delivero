@@ -1,38 +1,54 @@
-import { InMemoryDeliveryMenRepository } from "test/repositories/in-memory-delivery-men-repository"
-import { CreateDeliveryManUseCase } from "./create-delivery-man"
-import { makeDeliveryMan } from "test/factories/make-delivery-man"
+import { CreateDelivererUseCase } from "./create-delivery-man"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { FakeHasher } from "test/cryptography/fake-hasher"
+import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
+import { makeDeliverer } from "test/factories/make-deliverer"
 
-let deliveryMenRepository: InMemoryDeliveryMenRepository
+let delivererRepository: InMemoryDelivererRepository
 let hasher: FakeHasher
-let sut: CreateDeliveryManUseCase
+let sut: CreateDelivererUseCase
 
-describe("Create Delivery Man Use Case", async () => {
+describe("Create Deliverer Use Case", async () => {
   beforeEach(async () => {
-    deliveryMenRepository = new InMemoryDeliveryMenRepository()
+    delivererRepository = new InMemoryDelivererRepository()
     hasher = new FakeHasher()
-    sut = new CreateDeliveryManUseCase(deliveryMenRepository, hasher)
+    sut = new CreateDelivererUseCase(delivererRepository, hasher)
   })
 
-  it("should be able to create a delivery man", async () => {
-    const deliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
+  it("should be able to create a deliverer", async () => {
+    const deliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055") })
 
-    const result = await sut.execute(deliveryMan)
+    const result = await sut.execute({
+      cpf: deliverer.cpf.value,
+      email: deliverer.email,
+      latitude: deliverer.geo.latitude,
+      longitude: deliverer.geo.longitude,
+      name: deliverer.name,
+      password: deliverer.password,
+      phone: deliverer.phone
+    })
 
     expect(result.isRight()).toBeTruthy()
 
-    expect(deliveryMenRepository.items.length).toEqual(1)
+    expect(delivererRepository.items.length).toEqual(1)
   })
 
-  it("should not create a delivery man with an existing cpf", async () => {
-    const deliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
-    const secondDeliveryMan = makeDeliveryMan({ cpf: Cpf.create("40171993055") })
+  it("should not create a deliverer with an existing cpf", async () => {
+    const deliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055") })
+    const secondDeliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055") })
 
-    deliveryMenRepository.items.push(deliveryMan)
+    delivererRepository.items.push(deliverer)
 
-    const result = await sut.execute(secondDeliveryMan)
+    const result = await sut.execute({
+      cpf: secondDeliverer.cpf.value,
+      email: secondDeliverer.email,
+      latitude: secondDeliverer.geo.latitude,
+      longitude: secondDeliverer.geo.longitude,
+      name: secondDeliverer.name,
+      password: secondDeliverer.password,
+      phone: secondDeliverer.phone
+    })
 
     expect(result.isLeft()).toBeTruthy()
 
@@ -41,15 +57,19 @@ describe("Create Delivery Man Use Case", async () => {
 
   it("should hash the password before saving", async () => {
     const result = await sut.execute({
-      cpf: Cpf.create("40171993055"),
+      cpf: "40171993055",
       name: "John Doe",
-      password: "password"
+      password: "password",
+      email: "john@doe.com",
+      latitude: 0,
+      longitude: 0,
+      phone: "123456789"
     })
     
     expect(result.isRight()).toBeTruthy()
 
     const hashedPassword = await hasher.hash("password")
 
-    expect(deliveryMenRepository.items[0].password).toEqual(hashedPassword)
+    expect(delivererRepository.items[0].password).toEqual(hashedPassword)
   })
 })

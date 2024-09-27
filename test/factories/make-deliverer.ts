@@ -13,6 +13,10 @@ export function makeDeliverer(
   overrideUserProps: Partial<UserProps> = {},
   id?: UniqueEntityId
 ) {
+  /* 
+  * This function creates a Deliverer entity with the given properties.
+  * If no properties are given, random values will be generated.
+  */
   const deliveryMan = Deliverer.create(
     {
       deliveriesCount: faker.number.int(),

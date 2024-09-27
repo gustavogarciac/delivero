@@ -14,10 +14,10 @@ export interface UserProps {
   password: string;
   cpf: Cpf;
   phone: string;
-  registeredAt: Date;
+  registeredAt?: Date | null;
   updatedAt?: Date | null;
-  status: Status;
-  role: Role;
+  status?: Status;
+  role?: Role;
 }
 
 export abstract class User extends Entity<UserProps> {
@@ -60,6 +60,9 @@ export abstract class User extends Entity<UserProps> {
   }
 
   isAdmin() {
+    if (!this.props.role) {
+      return false;
+    }
     return this.props.role.isAdmin();
   }
 

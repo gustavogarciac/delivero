@@ -16,7 +16,7 @@ export class Cpf {
     return new Cpf(value)
   }
 
-  private static isValid(cpf: string): boolean {
+  static isValid(cpf: string): boolean {
     const cleanedCpf = cpf.replace(/[^\d]/g, '') // Remove caracteres não numéricos
 
     if (cleanedCpf.length !== 11) {

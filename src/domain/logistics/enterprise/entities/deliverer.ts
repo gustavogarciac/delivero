@@ -119,6 +119,20 @@ export class Deliverer extends User {
     this.delivererProps = delivererProps
   }
 
+  /**
+ * This function creates a Deliverer entity with the given properties.
+ * 
+ * @param {DelivererProps} delivererProps - The properties of the deliverer, including vehicle, availability, geolocation, number of deliveries, and rating.
+ * @param {UserProps} userProps - The base properties of the user, such as name, cpf, password, and email.
+ * @param {UniqueEntityId} [id] - Optional unique entity ID for the deliverer.
+ * @returns {Deliverer} - Returns a new instance of the Deliverer entity.
+ * 
+ * @example
+ * const geo = new Geolocalization({ latitude: 0, longitude: 0 });
+ * const userProps = { cpf: Cpf.create("40171993055"), name: "John Doe", password: "password", email: "john@example.com" };
+ * const delivererProps = { deliveriesCount: 0, geo, isAvailable: true, rating: 5 };
+ * const deliverer = Deliverer.create(delivererProps, userProps);
+ */
   static create(delivererProps: DelivererProps, userProps: UserProps, id?: UniqueEntityId) {
     return new Deliverer({
       ...delivererProps,
