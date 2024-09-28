@@ -29,6 +29,24 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return order
   }
 
+  async findMany(params: PaginationParams): Promise<{ items: Order[], total?: number }> {
+    const { page, perPage, count, query } = params
+
+    const paginatedOrders = this.items.slice((page - 1) * perPage, page * perPage)
+
+    if (query) {
+      const filteredOrders = this.items.filter((order) => order.pickupCode.includes(query))
+
+      if(!count) return { items: filteredOrders }
+
+      return { items: filteredOrders, total: this.items.length }
+    }
+
+    if(!count) return { items: paginatedOrders }
+
+    return { items: paginatedOrders, total: this.items.length }
+  }
+
   async findManyNear(delivererGeo: Geolocalization, maxDistance: number): Promise<Order[]> {
     const { latitude: delivererLatitude, longitude: delivererLongitude } = delivererGeo
 

@@ -137,6 +137,7 @@ export class Order extends Entity<OrderProps> {
   setAsPickedUp(delivererId: string) {
     this.props.status = OrderStatus.IN_TRANSIT
     this.props.delivererId = new UniqueEntityId(delivererId)
+    this.props.pickedAt = new Date()
     this.touch()
   }
 

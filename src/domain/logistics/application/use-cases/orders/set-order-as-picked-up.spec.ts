@@ -42,6 +42,7 @@ describe("Set Order as Picked Up Use Case", async () => {
 
     expect(result.isRight()).toBeTruthy()
     expect(ordersRepository.items[0].status).toBe(OrderStatus.IN_TRANSIT)
+    expect(ordersRepository.items[0].pickedAt).not.toBeNull()
 
     expect(deliverer.orders).toEqual([
       expect.objectContaining({ id: order.id, status: OrderStatus.IN_TRANSIT })
