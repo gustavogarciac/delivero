@@ -25,7 +25,7 @@ export class ResetDelivererPasswordUseCase {
 
     if(!deliverer) return left(new BadRequestError("Deliverer not found"))
 
-    const token = await this.encrypter.encrypt({ sub: randomUUID() })
+    const token = await this.encrypter.encrypt({ sub: deliverer.id.toString() })
 
     const resetLink = `http://localhost:3333/reset-password?token=${JSON.parse(token).sub}`
 
