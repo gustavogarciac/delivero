@@ -2,7 +2,7 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { User, UserProps } from "./user";
 import { Permissions } from "./permissions/admin";
 
-interface AdminProps {
+export interface AdminProps {
   permissions: Permissions;
 }
 

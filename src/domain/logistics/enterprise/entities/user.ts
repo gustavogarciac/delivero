@@ -106,6 +106,9 @@ export abstract class User extends Entity<UserProps> {
   }
 
   protected constructor(props: UserProps, id?: UniqueEntityId) {
-    super(props, id);
+    super({
+      ...props,
+      status: Status.INACTIVE
+    }, id);
   }
 }

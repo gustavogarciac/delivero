@@ -12,4 +12,8 @@ export class Permissions {
   constructor(permissions: string[]) {
     this.permissions = new Set(permissions);
   }
+
+  static admin(): Permissions {
+    return new Permissions(['all']);
+  }
 }

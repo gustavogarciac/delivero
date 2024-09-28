@@ -45,7 +45,7 @@ export class CreateDelivererUseCase {
     const deliverer = Deliverer.create({
       deliveriesCount: 0,
       geo: new Geolocalization({ latitude, longitude }),
-      isAvailable: true,
+      isAvailable: false,
       rating: 5,
     }, {
       cpf: Cpf.create(cpf),
