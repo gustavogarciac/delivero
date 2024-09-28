@@ -134,6 +134,11 @@ export class Order extends Entity<OrderProps> {
     this.touch()
   }
 
+  setAsReturned() {
+    this.props.status = OrderStatus.RETURNED
+    this.touch()
+  }
+
   static create({
     delivererId,
     recipientId,
