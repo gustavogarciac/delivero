@@ -18,10 +18,8 @@ export function makeOrder(
   override: Partial<OrderProps> = {},
   id?: UniqueEntityId
 ) {
-  const deliverer = makeDeliverer()
-
   const order = Order.create({
-    delivererId: deliverer.id,
+    delivererId: null,
     deliveryAddress: faker.location.streetAddress(),
     geo: Geolocalization.create({ latitude: faker.location.latitude(), longitude: faker.location.longitude() }),
     recipientId: new UniqueEntityId(),

@@ -1,7 +1,10 @@
 import { Order } from "../../enterprise/entities/order";
+import { Geolocalization } from "../../enterprise/entities/value-objects/geolocalization";
 
 export abstract class OrdersRepository {
   abstract create(order: Order): Promise<void>
   abstract findById(id: string): Promise<Order | null>
-  abstract setAsPickedUp(id: string): Promise<void>
+  abstract setAsPickedUp(orderId: string, delivererId: string): Promise<void>
+  abstract findManyNear(delivererGeo: Geolocalization, maxDistance: number): Promise<Order[]>
+  abstract findManyByDelivererId(delivererId: string): Promise<Order[]>
 }

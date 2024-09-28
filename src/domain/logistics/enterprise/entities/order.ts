@@ -10,7 +10,7 @@ export enum OrderStatus {
 }
 
 export type OrderProps = {
-  delivererId: UniqueEntityId,
+  delivererId?: UniqueEntityId | null,
   recipientId: UniqueEntityId,
   adminId?: UniqueEntityId | null,
   status: OrderStatus,
@@ -27,8 +27,8 @@ export type OrderProps = {
 }
 
 export class Order extends Entity<OrderProps> {
-  get delivererId() {
-    return this.props.delivererId
+  get delivererId(): UniqueEntityId | null {
+    return this.props.delivererId ?? null
   }
   get recipientId() {
     return this.props.recipientId
@@ -128,8 +128,9 @@ export class Order extends Entity<OrderProps> {
     this.touch()
   }
 
-  setAsPickedUp() {
+  setAsPickedUp(delivererId: string) {
     this.props.status = OrderStatus.IN_TRANSIT
+    this.props.delivererId = new UniqueEntityId(delivererId)
     this.touch()
   }
 

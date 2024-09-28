@@ -7,6 +7,8 @@ import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-ob
 import { Vehicle } from "@/domain/logistics/enterprise/entities/vehicle";
 import { faker } from "@faker-js/faker";
 import { makeVehicle } from "./make-vehicle";
+import { makeOrder } from "./make-order";
+import { Order, OrderStatus } from "@/domain/logistics/enterprise/entities/order";
 
 export function makeDeliverer(
   overrideDeliveryManProps: Partial<DelivererProps> = {},
@@ -19,13 +21,14 @@ export function makeDeliverer(
   */
   const deliveryMan = Deliverer.create(
     {
-      deliveriesCount: faker.number.int(),
+      deliveriesCount: faker.number.int({ min: 0, max: 100 }),
       isAvailable: faker.datatype.boolean(),
       rating: faker.number.int({
         min: 0,
         max: 5,
       }),
       geo: Geolocalization.create({ latitude: faker.location.latitude(), longitude: faker.location.longitude() }),
+      orders: [],
       ...overrideDeliveryManProps
     },
     {

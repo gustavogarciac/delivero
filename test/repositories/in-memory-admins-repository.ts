@@ -2,6 +2,7 @@ import { PaginationParams } from "@/core/repositories/pagination";
 import { AdminsRepository } from "@/domain/logistics/application/repositories/admins-repository";
 import { DeliverersRepository } from "@/domain/logistics/application/repositories/deliverers-repository";
 import { Admin } from "@/domain/logistics/enterprise/entities/admin";
+import { Order } from "@/domain/logistics/enterprise/entities/order";
 import { Status } from "@/domain/logistics/enterprise/entities/user";
 
 export class InMemoryAdminsRepository implements AdminsRepository {
@@ -32,6 +33,16 @@ export class InMemoryAdminsRepository implements AdminsRepository {
     deliverer.status = Status.ACTIVE
 
     this.deliverersRepository.save(deliverer)
+  }
+
+  async attendOrderToDeliverer(order: Order, delivererId: string): Promise<void> {
+    const deliverer = await this.deliverersRepository.findById(delivererId)
+
+    if(!deliverer) return
+
+    deliverer.attendOrder(order)
+
+    this.deliverersRepository.save
   }
 
   // async findByEmail(email: string): Promise<Admin | null> {

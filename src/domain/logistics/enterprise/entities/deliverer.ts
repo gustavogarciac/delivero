@@ -6,6 +6,7 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Status, User, UserProps } from "./user";
 import { Vehicle } from "./vehicle";
 import { Geolocalization } from "./value-objects/geolocalization";
+import { Order } from "./order";
 export interface DelivererProps {
   vehicle?: Vehicle | null
   isAvailable: boolean
@@ -13,6 +14,7 @@ export interface DelivererProps {
   geo: Geolocalization
   deliveriesCount: number
   rating: number
+  orders?: Order[]
   createdAt?: Date | null
   updatedAt?: Date | null
 }
@@ -39,6 +41,10 @@ export class Deliverer extends User {
     return this.delivererProps.rating
   }
 
+  get orders(): Order[] | null {
+    return this.delivererProps.orders ?? null
+  }
+
   get createdAt() {
     return this.delivererProps.createdAt
   }
@@ -49,6 +55,16 @@ export class Deliverer extends User {
 
   set vehicle(vehicle: Vehicle) {
     this.delivererProps.vehicle = vehicle
+  }
+
+  set orders(orders: Order[]) {
+    this.delivererProps.orders = orders
+  }
+
+  attendOrder(order: Order) {
+    this.delivererProps.deliveriesCount++
+    this.delivererProps.orders?.push(order)
+    this.touch()
   }
 
   protected constructor(delivererProps: DelivererProps, userProps: UserProps, id?: UniqueEntityId) {
