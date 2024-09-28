@@ -7,6 +7,7 @@ export abstract class OrdersRepository {
   abstract save(order: Order): Promise<void>
   abstract findById(id: string): Promise<Order | null>
   abstract setAsPickedUp(orderId: string, delivererId: string): Promise<void>
+  abstract setAsDelivered(orderId: string, delivererId: string): Promise<void>
   abstract findManyNear(delivererGeo: Geolocalization, maxDistance: number): Promise<Order[]>
   abstract findManyByDelivererId(params: PaginationParams, delivererId: string): Promise<{ items: Order[], total?: number }>
 }

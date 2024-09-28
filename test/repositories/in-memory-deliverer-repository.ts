@@ -47,6 +47,16 @@ export class InMemoryDelivererRepository implements DeliverersRepository {
     return { items: paginatedItems };
   }
 
+  async incrementDeliveriesCount(delivererId: string): Promise<void> {
+    const deliverer = this.items.find((deliverer) => deliverer.id.toString() === delivererId)
+
+    if(!deliverer) return
+
+    deliverer.incrementDeliveriesCount()
+
+    await this.save(deliverer)
+  }
+
   async create(deliverer: Deliverer): Promise<void> {
     this.items.push(deliverer)
   }

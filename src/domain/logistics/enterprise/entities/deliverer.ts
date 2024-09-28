@@ -62,8 +62,12 @@ export class Deliverer extends User {
   }
 
   attendOrder(order: Order) {
-    this.delivererProps.deliveriesCount++
     this.delivererProps.orders?.push(order)
+    this.touch()
+  }
+
+  incrementDeliveriesCount() {
+    this.delivererProps.deliveriesCount++
     this.touch()
   }
 
