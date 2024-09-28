@@ -7,7 +7,7 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id"
 let ordersRepository: InMemoryOrdersRepository
 let sut: CreateOrderUseCase
 
-describe("Authenticate Delivery Man Use Case", async () => {
+describe("Create Order Use Case", async () => {
   beforeEach(async () => {
     ordersRepository = new InMemoryOrdersRepository()
     sut = new CreateOrderUseCase(ordersRepository)

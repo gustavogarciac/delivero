@@ -9,7 +9,7 @@ export enum OrderStatus {
   RETURNED
 }
 
-type OrderProps = {
+export type OrderProps = {
   delivererId: UniqueEntityId,
   recipientId: UniqueEntityId,
   adminId?: UniqueEntityId | null,
@@ -125,6 +125,11 @@ export class Order extends Entity<OrderProps> {
 
   set returnedAt(returnedAt: Date | null) {
     this.props.returnedAt = returnedAt
+    this.touch()
+  }
+
+  setAsPickedUp() {
+    this.props.status = OrderStatus.IN_TRANSIT
     this.touch()
   }
 
