@@ -6,24 +6,30 @@ import { OrdersRepository } from "../../repositories/orders-repository"
 
 interface ListPendingOrdersUseCaseRequest {
   delivererId: string
+  page: number
+  perPage: number
+  count?: boolean
 }
 
-type ListPendingOrdersUseCaseResponse = Either<BadRequestError, { orders: Order[] }>
+type ListPendingOrdersUseCaseResponse = Either<BadRequestError, { items: Order[], total?: number }>
 
 export class ListPendingOrdersUseCase {
   constructor(private deliverersRepository: DeliverersRepository, private ordersRepository: OrdersRepository) {}
 
   async execute({
     delivererId,
+    page,
+    perPage,
+    count
   } : ListPendingOrdersUseCaseRequest): Promise<ListPendingOrdersUseCaseResponse> {
     const deliverer = await this.deliverersRepository.findById(delivererId)
 
     if(!deliverer) return left(new BadRequestError("Deliverer not found"))
 
-    const orders = await this.ordersRepository.findManyByDelivererId(delivererId)
+    const orders = await this.ordersRepository.findManyByDelivererId({ page, perPage, count }, delivererId)
 
-    const pendingOrders = orders.filter((order) => order.status === OrderStatus.IN_TRANSIT)
+    const pendingOrders = orders.items.filter((order) => order.status === OrderStatus.IN_TRANSIT)
 
-    return right({ orders: pendingOrders })
+    return right({ items: pendingOrders, total: orders.total })
   }
 }

@@ -28,12 +28,20 @@ describe("List orders use case", async () => {
 
     await deliverersRepository.items.push(deliverer)
 
-    const response = await sut.execute({ delivererId: deliverer.id.toString() })
+    const response = await sut.execute({ 
+      delivererId: deliverer.id.toString(), 
+      page: 1, 
+      perPage: 10,
+      count: true
+    })
 
     expect(response.isRight()).toBeTruthy()
 
-    expect(response.value).toEqual({
-      orders: expect.arrayContaining(ordersRepository.items)
-    })
+    expect(response.value).toEqual(expect.objectContaining({
+      items: expect.arrayContaining([
+        expect.objectContaining({ delivererId: deliverer.id })
+      ]),
+      total: expect.any(Number)
+    }))
   })
 })

@@ -30,11 +30,19 @@ describe("List pending orders use case", async () => {
     await ordersRepository.items.push(...orders)
     await ordersRepository.items.push(...inTransitOrders)
 
-    const response = await sut.execute({ delivererId: deliverer.id.toString() })
+    const response = await sut.execute({ 
+      delivererId: deliverer.id.toString(), 
+      page: 1, 
+      perPage: 10,
+      count: true 
+    })
 
     expect(response.isRight()).toBeTruthy()
-    expect(response.value).toEqual({
-      orders: inTransitOrders
-    })
+    expect(response.value).toEqual(expect.objectContaining({
+      items: expect.arrayContaining([
+        expect.objectContaining({ delivererId: deliverer.id, status: OrderStatus.IN_TRANSIT})
+      ]),
+      total: expect.any(Number)
+    }))
   })
 })

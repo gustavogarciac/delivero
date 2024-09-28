@@ -1,4 +1,5 @@
 import { calculateDistanceInQuilometers } from "@/core/haversine";
+import { PaginationParams } from "@/core/repositories/pagination";
 import { OrdersRepository } from "@/domain/logistics/application/repositories/orders-repository";
 import { Order } from "@/domain/logistics/enterprise/entities/order";
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization";
@@ -35,8 +36,16 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     })
   }
 
-  async findManyByDelivererId(delivererId: string): Promise<Order[]> {
-    return this.items.filter((order) => order.delivererId?.toString() === delivererId)
+  async findManyByDelivererId(params: PaginationParams, delivererId: string): Promise<{ items: Order[], total?: number }> {
+    const { page, perPage, count } = params
+
+    const orders = this.items.filter((order) => order.delivererId?.toString() === delivererId)
+
+    const paginatedOrders = orders.slice((page - 1) * perPage, page * perPage)
+
+    if(!count) return { items: paginatedOrders }
+
+    return { items: paginatedOrders, total: this.items.length }
   }
 
   async setAsPickedUp(id: string, delivererId: string): Promise<void> {
