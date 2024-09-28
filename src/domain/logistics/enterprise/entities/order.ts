@@ -3,6 +3,7 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Geolocalization } from "./value-objects/geolocalization";
 
 export enum OrderStatus {
+  PREPARING,
   AWAITING_PICKUP,
   IN_TRANSIT,
   DELIVERED,
@@ -125,6 +126,11 @@ export class Order extends Entity<OrderProps> {
 
   set returnedAt(returnedAt: Date | null) {
     this.props.returnedAt = returnedAt
+    this.touch()
+  }
+
+  setAsAwaitingPickup() {
+    this.props.status = OrderStatus.AWAITING_PICKUP
     this.touch()
   }
 

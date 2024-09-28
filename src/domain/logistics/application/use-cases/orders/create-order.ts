@@ -31,7 +31,7 @@ export class CreateOrderUseCase {
       delivererId,
       recipientId,
       adminId,
-      status: OrderStatus.AWAITING_PICKUP,
+      status: OrderStatus.PREPARING,
       deliveryAddress,
       geo,
       notes
