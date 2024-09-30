@@ -11,7 +11,7 @@ export interface RecipientProps {
   state: string;
   zip: string;
   country: string;
-  orders: Order[];
+  orders?: Order[] | null;
   createdAt?: Date | null;
   updatedAt?: Date | null;
   lastOrderAt?: Date | null;
@@ -50,8 +50,8 @@ export class Recipient extends Entity<RecipientProps> {
     return this.props.country;
   }
 
-  get orders(): Order[] {
-    return this.props.orders;
+  get orders(): Order[] | null {
+    return this.props.orders ?? null;
   }
 
   get createdAt(): Date | null {

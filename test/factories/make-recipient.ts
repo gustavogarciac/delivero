@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 import { makeOrder } from "./make-order";
 import { Order } from "@/domain/logistics/enterprise/entities/order";
 
-export function makeDeliverer(
+export function makeRecipient(
   override: Partial<RecipientProps> = {},
   id?: UniqueEntityId
 ) {
