@@ -1,5 +1,6 @@
 import { PaginationParams } from "@/core/repositories/pagination";
 import { RecipientsRepository } from "@/domain/logistics/application/repositories/recipients-repository";
+import { Order } from "@/domain/logistics/enterprise/entities/order";
 import { Recipient } from "@/domain/logistics/enterprise/entities/recipient";
 
 export class InMemoryRecipientsRepository implements RecipientsRepository {
@@ -13,6 +14,14 @@ export class InMemoryRecipientsRepository implements RecipientsRepository {
     const index = this.items.findIndex((item) => item.id === recipient.id)
 
     this.items.splice(index, 1)
+  }
+
+  async save(recipient: Recipient): Promise<void> {
+    const index = this.items.findIndex((item) => item.id === recipient.id)
+
+    if (index === -1) return
+
+    this.items[index] = recipient
   }
 
   async findMany(params: PaginationParams): Promise<{ items: Recipient[]; total?: number }> {
@@ -43,5 +52,25 @@ export class InMemoryRecipientsRepository implements RecipientsRepository {
     if (!recipient) return null
 
     return recipient
+  }
+
+  async fetchOrders(params: PaginationParams, recipientId: string): Promise<{ items: Order[]; total?: number; }> {
+    const { page, perPage, count, query } = params
+  
+    const recipient = this.items.find((recipient) => recipient.id.toString() === recipientId)
+
+    if (!recipient) return { items: [] }
+
+    if (!recipient.orders) return { items: [] }
+
+    const filteredItems = query
+      ? recipient.orders.filter((order) => order.pickupCode.includes(query))
+      : recipient.orders
+  
+    const paginatedItems = filteredItems.slice((page - 1) * perPage, page * perPage)
+  
+    return count
+      ? { items: paginatedItems, total: filteredItems.length }
+      : { items: paginatedItems }
   }
 }
