@@ -2,7 +2,6 @@ import { Either, left, right } from "@/core/either"
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Encrypter } from "../../cryptography/encrypter"
-import { randomUUID } from "node:crypto"
 import { Mailer } from "../../mailer/mailer"
 
 interface ResetDelivererPasswordUseCaseRequest {
