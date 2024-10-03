@@ -119,7 +119,6 @@ export class Recipient extends Entity<RecipientProps> {
     super(props, id)
   }
 
-
   static create(props: RecipientProps, id?: UniqueEntityId): Recipient {
     return new Recipient(props, id)
   }

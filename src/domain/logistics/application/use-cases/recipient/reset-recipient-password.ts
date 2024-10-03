@@ -1,19 +1,20 @@
 import { Either, left, right } from "@/core/either"
 import { BadRequestError } from "@/core/errors/bad-request-error"
-import { Encrypter } from "../../cryptography/encrypter"
 import { Mailer } from "../../mailer/mailer"
 import { RecipientsRepository } from "../../repositories/recipients-repository"
+import { Otp } from "@/domain/logistics/enterprise/entities/value-objects/otp"
+import { RecipientTokensRepository } from "../../repositories/recipient-tokens-repository"
 
 interface ResetRecipientPasswordUseCaseRequest {
   email: string
 }
 
-type ResetRecipientPasswordUseCaseResponse = Either<BadRequestError, { token: string }>
+type ResetRecipientPasswordUseCaseResponse = Either<BadRequestError, { otp: string }>
 
 export class ResetRecipientPasswordUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository, 
-    private encrypter: Encrypter,
+    private recipientTokensRepository: RecipientTokensRepository,
     private mailer: Mailer
   ) {}
 
@@ -23,18 +24,17 @@ export class ResetRecipientPasswordUseCase {
     const recipient = await this.recipientsRepository.findByEmail(email)
 
     if(!recipient) return left(new BadRequestError("Recipient not found"))
+    
+    const otp = Otp.generate(6, 10)
 
-    const token = await this.encrypter.encrypt({ sub: recipient.id.toString() })
-
-    const resetLink = `http://localhost:3333/reset-password?token=${JSON.parse(token).sub}`
+    await this.recipientTokensRepository.save(recipient.id.toString(), otp.value, otp.expiration)
 
     await this.mailer.send({
       to: recipient.email,
-      subject: "Password reset",
-      body: 
-        `Click here to reset your password: <a href="${resetLink}">${resetLink}</a>`
+      subject: "Your password reset code",
+      body: `Your token for resetting your password is: ${otp}. It is valid for 10 minutes.`
     })
 
-    return right({ token })
+    return right({ otp: otp.value })
   }
 }

@@ -1,6 +1,7 @@
 import { PaginationParams } from "@/core/repositories/pagination";
 import { Recipient } from "../../enterprise/entities/recipient";
 import { Order } from "../../enterprise/entities/order";
+import { Otp } from "../../enterprise/entities/value-objects/otp";
 
 export abstract class RecipientsRepository {
   abstract findMany(params: PaginationParams): Promise<{ items: Recipient[], total?: number }>
