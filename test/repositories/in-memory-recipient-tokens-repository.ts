@@ -1,5 +1,5 @@
 import { RecipientTokenRepository } from "@/domain/logistics/application/repositories/recipient-tokens-repository"
-import { RecipientToken } from "@/domain/logistics/enterprise/entities/recipientToken"
+import { RecipientToken } from "@/domain/logistics/enterprise/entities/recipientTokens"
 
 export class InMemoryRecipientTokenRepository implements RecipientTokenRepository {
   items: RecipientToken[] = []
@@ -12,5 +12,13 @@ export class InMemoryRecipientTokenRepository implements RecipientTokenRepositor
     })
 
     this.items.push(recipientToken)
+  }
+
+  async findByRecipientIdAndToken(recipientId: string, token: string): Promise<RecipientToken | null> {
+    const recipientToken = await this.items.find((item) => item.recipientId === recipientId && item.token === token)
+
+    if(!recipientToken) return null
+
+    return recipientToken
   }
 }

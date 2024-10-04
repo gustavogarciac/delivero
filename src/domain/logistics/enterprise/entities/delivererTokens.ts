@@ -1,12 +1,12 @@
 import { Entity } from "@/core/entities/entity";
 
-type DelivererTokensProps = {
+type DelivererTokenProps = {
   delivererId: string
   token: string
   expiration: Date
 }
 
-export class DelivererTokens extends Entity<DelivererTokensProps> {
+export class DelivererToken extends Entity<DelivererTokenProps> {
   get delivererId(): string {
     return this.props.delivererId
   }
@@ -31,11 +31,11 @@ export class DelivererTokens extends Entity<DelivererTokensProps> {
     this.props.delivererId = delivererId
   }
 
-  protected constructor(props: DelivererTokensProps) {
+  protected constructor(props: DelivererTokenProps) {
     super(props)
   }
 
-  static create(props: DelivererTokensProps): DelivererTokens {
-    return new DelivererTokens(props)
+  static create(props: DelivererTokenProps): DelivererToken {
+    return new DelivererToken(props)
   }
 }

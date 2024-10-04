@@ -1,21 +1,22 @@
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
-import { Encrypter } from "../../cryptography/encrypter"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Either, left, right } from "@/core/either"
 import { Hasher } from "../../cryptography/hasher"
+import { UnauthorizedError } from "@/core/errors/unauthorized-error"
+import { DelivererTokenRepository } from "../../repositories/deliverer-tokens-repository"
 
-interface ConfirmPasswordResetUseCaseRequest {
+interface ConfirmDelivererPasswordResetUseCaseRequest {
   token: string
   delivererId: string
   newPassword: string
 }
 
-type ConfirmPasswordResetUseCaseResponse = Either<BadRequestError, object>
+type ConfirmDelivererPasswordResetUseCaseResponse = Either<BadRequestError | UnauthorizedError, object>
 
-export class ConfirmPasswordResetUseCase {
+export class ConfirmDelivererPasswordResetUseCase {
   constructor(
     private deliverersRepository: DeliverersRepository, 
-    private encrypter: Encrypter,
+    private delivererTokenRepository: DelivererTokenRepository,
     private hasher: Hasher
   ) {}
 
@@ -23,23 +24,23 @@ export class ConfirmPasswordResetUseCase {
     delivererId,
     token,
     newPassword
-  }: ConfirmPasswordResetUseCaseRequest): Promise<ConfirmPasswordResetUseCaseResponse> {
+  }: ConfirmDelivererPasswordResetUseCaseRequest): Promise<ConfirmDelivererPasswordResetUseCaseResponse> {
     const deliverer = await this.deliverersRepository.findById(delivererId)
 
     if (!deliverer) {
       return left(new BadRequestError("Deliverer not found"))
     }
 
-    let decryptedToken;
+    const otp = await this.delivererTokenRepository.findByDelivererIdAndToken(delivererId, token)
 
-    try {
-      decryptedToken = await this.encrypter.decrypt(token)
-    } catch (error) {
-      return left(new BadRequestError("Invalid or expired token"))
+    if (!otp) {
+      return left(new UnauthorizedError("Invalid OTP"))
     }
 
-    if (decryptedToken.sub.value !== delivererId) {
-      return left(new BadRequestError("Invalid token"))
+    const otpHasExpired = otp.expiration < new Date()
+
+    if (otpHasExpired) {
+      return left(new UnauthorizedError("Token expired"))
     }
 
     const hashedPassword = await this.hasher.hash(newPassword)
