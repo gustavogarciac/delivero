@@ -7,6 +7,7 @@ export interface RecipientProps {
   email: string;
   phone: string;
   address: string;
+  password: string;
   city: string;
   state: string;
   zip: string;
@@ -24,6 +25,10 @@ export class Recipient extends Entity<RecipientProps> {
 
   get email(): string {
     return this.props.email;
+  }
+
+  get password(): string {
+    return this.props.password;
   }
 
   get phone(): string {
@@ -73,6 +78,10 @@ export class Recipient extends Entity<RecipientProps> {
 
   set email(value: string) {
     this.props.email = value;
+  }
+
+  set password(value: string) {
+    this.props.password = value;
   }
 
   set phone(value: string) {

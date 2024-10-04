@@ -1,12 +1,12 @@
 import { Entity } from "@/core/entities/entity";
 
-type RecipientTokensProps = {
+type RecipientTokenProps = {
   recipientId: string
   token: string
   expiration: Date
 }
 
-export class RecipientTokens extends Entity<RecipientTokensProps> {
+export class RecipientToken extends Entity<RecipientTokenProps> {
   get recipientId(): string {
     return this.props.recipientId
   }
@@ -31,11 +31,11 @@ export class RecipientTokens extends Entity<RecipientTokensProps> {
     this.props.recipientId = recipientId
   }
 
-  protected constructor(props: RecipientTokensProps) {
+  protected constructor(props: RecipientTokenProps) {
     super(props)
   }
 
-  static create(props: RecipientTokensProps): RecipientTokens {
-    return new RecipientTokens(props)
+  static create(props: RecipientTokenProps): RecipientToken {
+    return new RecipientToken(props)
   }
 }

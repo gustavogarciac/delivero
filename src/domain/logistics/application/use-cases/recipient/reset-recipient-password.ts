@@ -3,7 +3,7 @@ import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Mailer } from "../../mailer/mailer"
 import { RecipientsRepository } from "../../repositories/recipients-repository"
 import { Otp } from "@/domain/logistics/enterprise/entities/value-objects/otp"
-import { RecipientTokensRepository } from "../../repositories/recipient-tokens-repository"
+import { RecipientTokenRepository } from "../../repositories/recipient-tokens-repository"
 
 interface ResetRecipientPasswordUseCaseRequest {
   email: string
@@ -14,7 +14,7 @@ type ResetRecipientPasswordUseCaseResponse = Either<BadRequestError, { otp: stri
 export class ResetRecipientPasswordUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository, 
-    private recipientTokensRepository: RecipientTokensRepository,
+    private recipientTokenRepository: RecipientTokenRepository,
     private mailer: Mailer
   ) {}
 
@@ -27,7 +27,7 @@ export class ResetRecipientPasswordUseCase {
     
     const otp = Otp.generate(6, 10)
 
-    await this.recipientTokensRepository.save(recipient.id.toString(), otp.value, otp.expiration)
+    await this.recipientTokenRepository.save(recipient.id.toString(), otp.value, otp.expiration)
 
     await this.mailer.send({
       to: recipient.email,
