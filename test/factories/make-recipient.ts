@@ -32,6 +32,7 @@ export function makeRecipient(
       lastOrderAt: new Date(),
       updatedAt: new Date(),
       orders,
+      password: faker.internet.password(),
       ...override
     },
     id

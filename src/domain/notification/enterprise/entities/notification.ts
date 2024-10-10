@@ -2,7 +2,7 @@ import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Optional } from "@prisma/client/runtime/library";
 
-interface NotificationProps {
+export interface NotificationProps {
   recipientId: UniqueEntityId
   title: string
   content: string
@@ -29,6 +29,10 @@ export class Notification extends Entity<NotificationProps> {
 
   get readAt() {
     return this.props.readAt
+  }
+
+  read() {
+    this.props.readAt = new Date()
   }
 
   static create(props: Optional<NotificationProps, 'createdAt'>, id?: UniqueEntityId) {
