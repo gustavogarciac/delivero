@@ -1,3 +1,4 @@
+import { DomainEvents } from "@/core/events/domain-events";
 import { calculateDistanceInQuilometers } from "@/core/haversine";
 import { PaginationParams } from "@/core/repositories/pagination";
 import { OrdersRepository } from "@/domain/logistics/application/repositories/orders-repository";
@@ -9,6 +10,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   async create(order: Order): Promise<void> {
     this.items.push(order)
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
   async save(order: Order): Promise<void> {
@@ -19,6 +21,8 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     } else {
       this.items.push(order);
     }
+
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
   async findById(id: string): Promise<Order | null> {
