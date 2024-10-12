@@ -1,8 +1,11 @@
-import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Geolocalization } from "./value-objects/geolocalization";
 import { AggregateRoot } from "@/core/entities/aggregate-root";
 import { OrderCreatedEvent } from "../events/order-created-event";
+import { OrderAwaitingPickup } from "../events/order-awaiting-pickup";
+import { OrderPickedUpEvent } from "../events/order-picked-up-event";
+import { OrderDeliveredEvent } from "../events/order-delivered-event";
+import { OrderReturnedEvent } from "../events/order-returned-event";
 
 export enum OrderStatus {
   PREPARING,
@@ -133,6 +136,7 @@ export class Order extends AggregateRoot<OrderProps> {
 
   setAsAwaitingPickup() {
     this.props.status = OrderStatus.AWAITING_PICKUP
+    this.addDomainEvent(new OrderAwaitingPickup(this))
     this.touch()
   }
 
@@ -140,17 +144,20 @@ export class Order extends AggregateRoot<OrderProps> {
     this.props.status = OrderStatus.IN_TRANSIT
     this.props.delivererId = new UniqueEntityId(delivererId)
     this.props.pickedAt = new Date()
+    this.addDomainEvent(new OrderPickedUpEvent(this))
     this.touch()
   }
 
   setAsReturned() {
     this.props.status = OrderStatus.RETURNED
+    this.addDomainEvent(new OrderReturnedEvent(this))
     this.touch()
   }
 
   setAsDelivered() {
     this.props.status = OrderStatus.DELIVERED
     this.props.deliveredAt = new Date()
+    this.addDomainEvent(new OrderDeliveredEvent(this))
     this.touch()
   }
 

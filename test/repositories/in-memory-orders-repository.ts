@@ -21,7 +21,6 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     } else {
       this.items.push(order);
     }
-
     DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
