@@ -1,6 +1,8 @@
 import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Geolocalization } from "./value-objects/geolocalization";
+import { AggregateRoot } from "@/core/entities/aggregate-root";
+import { OrderCreatedEvent } from "../events/order-created-event";
 
 export enum OrderStatus {
   PREPARING,
@@ -27,7 +29,7 @@ export type OrderProps = {
   createdAt: Date
 }
 
-export class Order extends Entity<OrderProps> {
+export class Order extends AggregateRoot<OrderProps> {
   get delivererId(): UniqueEntityId | null {
     return this.props.delivererId ?? null
   }
@@ -178,6 +180,12 @@ export class Order extends Entity<OrderProps> {
       returnedAt,
       createdAt: new Date()
     }, id)
+
+    const isNewOrder = !id
+
+    if(isNewOrder) {
+      order.addDomainEvent(new OrderCreatedEvent(order))
+    }
 
     return order
   }
