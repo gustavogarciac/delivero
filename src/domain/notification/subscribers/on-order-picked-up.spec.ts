@@ -9,11 +9,13 @@ import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 import { waitFor } from "test/utils/wait-for"
 import { OnOrderPickedUp } from "./on-order-picked-up"
 import { makeDeliverer } from "test/factories/make-deliverer"
+import { FakeMailer } from "test/mailer/mailer"
 
 let ordersRepository: InMemoryOrdersRepository
 let recipientsRepository: InMemoryRecipientsRepository
 let notificationsRepository: InMemoryNotificationsRepository
 let sendNotificationUseCase: SendNotificationUseCase
+let mailer: FakeMailer
 
 let sendNotificationExecuteSpy;
 
@@ -22,11 +24,12 @@ describe("On order picked up by deliverer", () => {
     ordersRepository = new InMemoryOrdersRepository()
     recipientsRepository = new InMemoryRecipientsRepository()
     notificationsRepository = new InMemoryNotificationsRepository()
+    mailer = new FakeMailer()
     sendNotificationUseCase = new SendNotificationUseCase(notificationsRepository)
 
     sendNotificationExecuteSpy = vi.spyOn(sendNotificationUseCase, "execute")
 
-    const onOrderPickedUp = new OnOrderPickedUp(recipientsRepository, sendNotificationUseCase)
+    const onOrderPickedUp = new OnOrderPickedUp(recipientsRepository, sendNotificationUseCase, mailer)
   })
 
   it("should send a notification when an order is picked up by a deliverer", async () => {
@@ -46,5 +49,16 @@ describe("On order picked up by deliverer", () => {
         title: "Your order has been picked up"
       })
     })
+
+    expect(mailer.getSentEmails()).toEqual([
+      {
+        to: recipient.email,
+        subject: "Your order has been picked up",
+        body: `
+          <h1>Your order has been picked up</h1>
+          <p>Your order with tracking code: ${order.trackingNumber} has been picked up by a deliverer and is on its way to you</p>
+        `
+      }
+    ])
   })
 })

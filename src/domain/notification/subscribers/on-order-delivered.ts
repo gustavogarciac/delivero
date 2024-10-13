@@ -3,11 +3,13 @@ import { EventHandler } from "@/core/events/event-handler";
 import { RecipientsRepository } from "@/domain/logistics/application/repositories/recipients-repository";
 import { SendNotificationUseCase } from "../application/use-cases/send-notification";
 import { OrderDeliveredEvent } from "@/domain/logistics/enterprise/events/order-delivered-event";
+import { Mailer } from "../application/mailer/mailer";
 
 export class OnOrderDelivered implements EventHandler {
   constructor(
     private recipiensRepository: RecipientsRepository,
-    private sendNotification: SendNotificationUseCase
+    private sendNotification: SendNotificationUseCase,
+    private mailer: Mailer
   ) {
     this.setupSubscriptions()
   }
@@ -24,6 +26,15 @@ export class OnOrderDelivered implements EventHandler {
         content: `Your order with tracking code: ${order.trackingNumber} has been delivered`,
         recipientId: recipient.id.toString(),
         title: "Your order has been delivered"
+      })
+
+      await this.mailer.send({
+        to: recipient.email,
+        subject: "Your order has been delivered",
+        body: `
+          <h1>Your order has been delivered</h1>
+          <p>Your order with tracking code: ${order.trackingNumber} has been delivered</p>
+        `
       })
     }
 

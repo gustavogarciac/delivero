@@ -7,11 +7,13 @@ import { makeRecipient } from "test/factories/make-recipient"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 import { waitFor } from "test/utils/wait-for"
 import { OnOrderDelivered } from "./on-order-delivered"
+import { FakeMailer } from "test/mailer/mailer"
 
 let ordersRepository: InMemoryOrdersRepository
 let recipientsRepository: InMemoryRecipientsRepository
 let notificationsRepository: InMemoryNotificationsRepository
 let sendNotificationUseCase: SendNotificationUseCase
+let mailer: FakeMailer
 
 let sendNotificationExecuteSpy;
 
@@ -20,11 +22,12 @@ describe("On order delivered", () => {
     ordersRepository = new InMemoryOrdersRepository()
     recipientsRepository = new InMemoryRecipientsRepository()
     notificationsRepository = new InMemoryNotificationsRepository()
+    mailer = new FakeMailer()
     sendNotificationUseCase = new SendNotificationUseCase(notificationsRepository)
 
     sendNotificationExecuteSpy = vi.spyOn(sendNotificationUseCase, "execute")
 
-    const onOrderDelivered = new OnOrderDelivered(recipientsRepository, sendNotificationUseCase)
+    const onOrderDelivered = new OnOrderDelivered(recipientsRepository, sendNotificationUseCase, mailer)
   })
 
   it("should send a notification when an order is delivered", async () => {
@@ -43,5 +46,16 @@ describe("On order delivered", () => {
         title: "Your order has been delivered"
       })
     })
+
+    expect(mailer.getSentEmails()).toEqual([
+      {
+        to: recipient.email,
+        subject: "Your order has been delivered",
+        body: `
+          <h1>Your order has been delivered</h1>
+          <p>Your order with tracking code: ${order.trackingNumber} has been delivered</p>
+        `
+      }
+    ])
   })
 })
