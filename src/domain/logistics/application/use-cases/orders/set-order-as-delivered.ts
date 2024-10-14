@@ -35,6 +35,12 @@ export class SetOrderAsDeliveredUseCase {
     if(order.status !== OrderStatus.IN_TRANSIT)
       return left(new BadRequestError("You can only set an order as delivered if it is in transit"))
 
+    const delivererAssignedToOrder = order.delivererId?.equals(deliverer.id)
+
+    if(!delivererAssignedToOrder) {
+      return left(new BadRequestError("You are not assigned to this order"))
+    }
+
     const orderDeliveredAttachmentConfirmation = await this.orderAttachmentsRepository.findByOrderDelivererId(orderId, delivererId)
 
     if(!orderDeliveredAttachmentConfirmation) {
