@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 import { BadRequestError } from "@/core/errors/bad-request-error"
+import { OrderAttachmentsRepository } from "../../repositories/order-attachments-repository"
 
 interface SetOrderAsDeliveredUseCaseRequest {
   orderId: string
@@ -15,7 +16,8 @@ type SetOrderAsDeliveredUseCaseResponse = Either<ResourceNotFoundError | BadRequ
 export class SetOrderAsDeliveredUseCase {
   constructor(
     private ordersRepository: OrdersRepository, 
-    private deliverersRepository: DeliverersRepository
+    private deliverersRepository: DeliverersRepository,
+    private orderAttachmentsRepository: OrderAttachmentsRepository
   ) {}
 
   async execute({
@@ -32,6 +34,12 @@ export class SetOrderAsDeliveredUseCase {
 
     if(order.status !== OrderStatus.IN_TRANSIT)
       return left(new BadRequestError("You can only set an order as delivered if it is in transit"))
+
+    const orderDeliveredAttachmentConfirmation = await this.orderAttachmentsRepository.findByOrderDelivererId(orderId, delivererId)
+
+    if(!orderDeliveredAttachmentConfirmation) {
+      return left(new BadRequestError("You must attach a picture to confirm the order delivery"))
+    }
     
     await this.ordersRepository.setAsDelivered(orderId, delivererId)
     await this.deliverersRepository.incrementDeliveriesCount(delivererId)

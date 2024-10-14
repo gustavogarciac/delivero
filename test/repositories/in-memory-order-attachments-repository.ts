@@ -7,4 +7,8 @@ export class InMemoryOrderAttachmentsRepository implements OrderAttachmentsRepos
   async create(orderAttachment: OrderAttachment): Promise<void> {
     this.items.push(orderAttachment)
   }
+
+  async findByOrderDelivererId(orderId: string, delivererId: string): Promise<OrderAttachment | null> {
+    return this.items.find((item) => item.delivererId === delivererId && item.orderId === orderId) ?? null
+  }
 }

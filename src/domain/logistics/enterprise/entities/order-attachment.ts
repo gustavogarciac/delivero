@@ -1,8 +1,7 @@
-import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Attachment, AttachmentProps, AttachmentType } from "./attachment";
 
-interface OrderAttachmentProps {
+export interface OrderAttachmentProps {
   orderId: string;
   delivererId: string;
 }
