@@ -2,6 +2,7 @@ import { Either, left, right } from "@/core/either";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Recipient } from "@/domain/logistics/enterprise/entities/recipient";
 import { RecipientsRepository } from "../../repositories/recipients-repository";
+import { Hasher } from "../../cryptography/hasher";
 
 interface RegisterRecipientUseCaseRequest {
   address: string
@@ -11,13 +12,14 @@ interface RegisterRecipientUseCaseRequest {
   name: string
   phone: string
   state: string
+  password: string
   zip: string
 }
 
-type RegisterRecipientUseCaseResponse = Either<BadRequestError, { recipient }>
+type RegisterRecipientUseCaseResponse = Either<BadRequestError, { recipient: Recipient }>
 
 export class RegisterRecipientUseCase {
-  constructor(private recipientsRepository: RecipientsRepository) {}
+  constructor(private recipientsRepository: RecipientsRepository, private hasher: Hasher) {}
 
   async execute({
     address,
@@ -27,6 +29,7 @@ export class RegisterRecipientUseCase {
     name,
     phone,
     state,
+    password,
     zip
   }: RegisterRecipientUseCaseRequest): Promise<RegisterRecipientUseCaseResponse> {
     const recipientWithSameEmail = await this.recipientsRepository.findByEmail(email)
@@ -43,8 +46,13 @@ export class RegisterRecipientUseCase {
       name,
       phone,
       state,
+      password,
       zip,
     })
+
+    const hashedPassword = await this.hasher.hash(password)
+
+    recipient.password = hashedPassword
     
     await this.recipientsRepository.create(recipient)
 
