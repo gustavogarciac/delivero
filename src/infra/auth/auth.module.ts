@@ -3,12 +3,15 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { EnvService } from "../env/env.service";
+import { JwtStrategy } from "./jwt.strategy";
+import { EnvModule } from "../env/env.module";
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.registerAsync({
-      inject: [ConfigService],
+      imports: [EnvModule],
+      inject: [EnvService],
       global: true,
       async useFactory(env: EnvService) {
         const privateKey = env.get("JWT_PRIVATE_KEY")
@@ -22,7 +25,7 @@ import { EnvService } from "../env/env.service";
       }
     })
   ],
-  exports: [JwtModule]
+  exports: [JwtModule],
+  providers: [EnvService, JwtStrategy]
 })
-export class AuthModule {
-}
+export class AuthModule {}
