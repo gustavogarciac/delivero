@@ -25,7 +25,7 @@ describe("Authenticate Deliverer Use Case", async () => {
     await delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: deliverer.cpf,
+      cpf: deliverer.cpf.value,
       password: "password"
     })
 
@@ -42,7 +42,7 @@ describe("Authenticate Deliverer Use Case", async () => {
     await delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: deliverer.cpf,
+      cpf: deliverer.cpf.value,
       password: "wrong-password"
     })
 

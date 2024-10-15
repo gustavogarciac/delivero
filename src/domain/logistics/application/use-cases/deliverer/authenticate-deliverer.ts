@@ -5,14 +5,16 @@ import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { Hasher } from "../../cryptography/hasher"
 import { Encrypter } from "../../cryptography/encrypter"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
+import { Injectable } from "@nestjs/common"
 
 interface AuthenticateDelivererUseCaseRequest {
-  cpf: Cpf
+  cpf: string
   password: string
 }
 
 type AuthenticateDelivererUseCaseResponse = Either<ResourceNotFoundError | BadRequestError, { accessToken: string }>
 
+@Injectable()
 export class AuthenticateDelivererUseCase {
   constructor(
     private deliverersRepository: DeliverersRepository,
@@ -24,10 +26,10 @@ export class AuthenticateDelivererUseCase {
     cpf,
     password
   } : AuthenticateDelivererUseCaseRequest): Promise<AuthenticateDelivererUseCaseResponse> {
-    const deliverer = await this.deliverersRepository.findByCpf(cpf.value)
+    const deliverer = await this.deliverersRepository.findByCpf(cpf)
 
     if(!deliverer) {
-      return left(new ResourceNotFoundError)
+      return left(new BadRequestError)
     }
 
     const passwordMatch = await this.hasher.compare(password, deliverer.password)
