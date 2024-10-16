@@ -3,12 +3,27 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
 import { PaginationParams } from "@/core/repositories/pagination";
 import { Deliverer } from "@/domain/logistics/enterprise/entities/deliverer";
+import { PrismaDelivererMapper } from "../mappers/prisma-deliverer-mapper";
 
 @Injectable()
 export class PrismaDeliverersRepository implements DeliverersRepository {
   constructor(private prisma: PrismaService) {}
-  findByCpf(cpf: string): Promise<Deliverer | null> {
-    throw new Error("Method not implemented.");
+  async findByCpf(cpf: string): Promise<Deliverer | null> {
+    const deliverer = await this.prisma.deliverer.findUnique({
+      where: {
+        cpf
+      },
+      include: {
+        orders: true,
+        vehicles: true
+      }
+    })
+
+    if(!deliverer) {
+      return null
+    }
+
+    return PrismaDelivererMapper.toDomain(deliverer)
   }
   findById(id: string): Promise<Deliverer | null> {
     throw new Error("Method not implemented.");
