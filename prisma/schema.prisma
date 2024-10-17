@@ -106,7 +106,7 @@ model Order {
   longitude       Float
   trackingCode    String      @unique @map("tracking_code")
   notes           String?
-  picketAt        DateTime?   @map("picket_at")
+  pickedAt        DateTime?   @map("picked_at")
   deliveredAt     DateTime?   @map("delivered_at")
   returnedAt      DateTime?   @map("returned_at")
   updatedAt       DateTime    @updatedAt @map("updated_at")
