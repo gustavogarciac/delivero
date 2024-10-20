@@ -15,7 +15,7 @@ export class PrismaDeliverersRepository implements DeliverersRepository {
       },
       include: {
         orders: true,
-        vehicles: true
+        vehicle: true
       }
     })
 

@@ -12,7 +12,7 @@ interface AuthenticateDelivererUseCaseRequest {
   password: string
 }
 
-type AuthenticateDelivererUseCaseResponse = Either<ResourceNotFoundError | BadRequestError, { accessToken: string }>
+type AuthenticateDelivererUseCaseResponse = Either<BadRequestError, { accessToken: string }>
 
 @Injectable()
 export class AuthenticateDelivererUseCase {

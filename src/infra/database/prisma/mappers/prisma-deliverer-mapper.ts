@@ -10,7 +10,7 @@ import { PrismaVehicleMapper } from "./prisma-vehicle-mapper";
 
 interface PrismaDelivererWithRelations extends PrismaDeliverer {
   orders: Order[]
-  vehicles: Vehicle[]
+  vehicle: Vehicle[]
 }
 
 export class PrismaDelivererMapper {
@@ -26,7 +26,7 @@ export class PrismaDelivererMapper {
       updatedAt: prismaDeliverer.updatedAt,
       createdAt: prismaDeliverer.registeredAt,
       orders: prismaDeliverer.orders.map(PrismaOrderMapper.toDomain),
-      vehicle: PrismaVehicleMapper.toDomain(prismaDeliverer.vehicles[0])
+      vehicle: PrismaVehicleMapper.toDomain(prismaDeliverer.vehicle[0])
     }, {
       cpf: Cpf.create(prismaDeliverer.cpf),
       email: prismaDeliverer.email,
