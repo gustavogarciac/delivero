@@ -1,6 +1,7 @@
 import { Entity } from "@/core/entities/entity";
+import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
-type DelivererTokenProps = {
+export type DelivererTokenProps = {
   delivererId: string
   token: string
   expiration: Date
@@ -31,11 +32,11 @@ export class DelivererToken extends Entity<DelivererTokenProps> {
     this.props.delivererId = delivererId
   }
 
-  protected constructor(props: DelivererTokenProps) {
-    super(props)
+  protected constructor(props: DelivererTokenProps, id?: UniqueEntityId) {
+    super(props, id)
   }
 
-  static create(props: DelivererTokenProps): DelivererToken {
-    return new DelivererToken(props)
+  static create(props: DelivererTokenProps, id?: UniqueEntityId): DelivererToken {
+    return new DelivererToken(props, id)
   }
 }

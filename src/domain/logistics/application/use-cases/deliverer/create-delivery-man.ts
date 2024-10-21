@@ -5,6 +5,7 @@ import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { Hasher } from "../../cryptography/hasher"
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization"
+import { Injectable } from "@nestjs/common"
 
 interface CreateDelivererUseCaseRequest {
   cpf: string
@@ -18,6 +19,7 @@ interface CreateDelivererUseCaseRequest {
 
 type CreateDelivererUseCaseResponse = Either<BadRequestError, { deliverer: Deliverer }>
 
+@Injectable()
 export class CreateDelivererUseCase {
   constructor(private deliverersRepository: DeliverersRepository, private hasher: Hasher) {}
 
@@ -33,13 +35,13 @@ export class CreateDelivererUseCase {
     const cpfIsValid = Cpf.isValid(cpf)
 
     if(!cpfIsValid) {
-      return left(new BadRequestError)
+      return left(new BadRequestError('Invalid CPF'))
     }
 
     const delivererWithExistingCpf = await this.deliverersRepository.findByCpf(cpf)
 
     if(delivererWithExistingCpf) {
-      return left(new BadRequestError)
+      return left(new BadRequestError('CPF already in use'))
     }
 
     const deliverer = Deliverer.create({

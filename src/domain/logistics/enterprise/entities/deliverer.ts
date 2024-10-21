@@ -41,8 +41,8 @@ export class Deliverer extends User {
     return this.delivererProps.rating
   }
 
-  get orders(): Order[] | null {
-    return this.delivererProps.orders ?? null
+  get orders(): Order[] {
+    return this.delivererProps.orders ?? []
   }
 
   get createdAt() {

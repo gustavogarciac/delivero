@@ -1,10 +1,10 @@
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Deliverer } from "@/domain/logistics/enterprise/entities/deliverer";
-import { Role } from "@/domain/logistics/enterprise/entities/role";
+import { Role, Roles } from "@/domain/logistics/enterprise/entities/role";
 import { Status } from "@/domain/logistics/enterprise/entities/user";
 import { Cpf } from "@/domain/logistics/enterprise/entities/value-objects/cpf";
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization";
-import { Order, Deliverer as PrismaDeliverer, Vehicle } from "@prisma/client";
+import { Order, Prisma, Deliverer as PrismaDeliverer, Role as UserRole, Vehicle } from "@prisma/client";
 import { PrismaOrderMapper } from "./prisma-order-mapper";
 import { PrismaVehicleMapper } from "./prisma-vehicle-mapper";
 
@@ -26,7 +26,7 @@ export class PrismaDelivererMapper {
       updatedAt: prismaDeliverer.updatedAt,
       createdAt: prismaDeliverer.registeredAt,
       orders: prismaDeliverer.orders.map(PrismaOrderMapper.toDomain),
-      vehicle: PrismaVehicleMapper.toDomain(prismaDeliverer.vehicle[0])
+      vehicle: PrismaVehicleMapper.toDomain(prismaDeliverer.vehicle[0]) ?? null
     }, {
       cpf: Cpf.create(prismaDeliverer.cpf),
       email: prismaDeliverer.email,
@@ -42,4 +42,21 @@ export class PrismaDelivererMapper {
     return deliverer
   }
 
+  static toPersistence(deliverer: Deliverer): Prisma.DelivererUncheckedCreateInput {
+    return {
+      cpf: deliverer.cpf.value,
+      deliveriesCount: deliverer.deliveriesCount,
+      email: deliverer.email,
+      isAvailable: deliverer.isAvailable,
+      latitude: deliverer.geo.latitude,
+      longitude: deliverer.geo.longitude,
+      name: deliverer.name,
+      password: deliverer.password,
+      phone: deliverer.phone,
+      id: deliverer.id.toString(),
+      rating: deliverer.rating,
+      role: deliverer.role?.type,
+    }
+  }
+  
 }

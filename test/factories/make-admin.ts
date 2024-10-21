@@ -30,7 +30,7 @@ export function makeAdmin(
       email: faker.internet.email(),
       phone: faker.phone.number(),
       registeredAt: faker.date.past(),
-      role: new Role("admin"),
+      role: new Role("ADMIN"),
       status: Status.ACTIVE,
       updatedAt: faker.date.past(),
       ...overrideUserProps

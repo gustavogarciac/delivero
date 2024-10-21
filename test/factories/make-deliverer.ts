@@ -7,6 +7,9 @@ import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-ob
 import { Vehicle } from "@/domain/logistics/enterprise/entities/vehicle";
 import { faker } from "@faker-js/faker";
 import { makeVehicle } from "./make-vehicle";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
+import { PrismaDelivererMapper } from "@/infra/database/prisma/mappers/prisma-deliverer-mapper";
 
 export function makeDeliverer(
   overrideDeliveryManProps: Partial<DelivererProps> = {},
@@ -36,7 +39,7 @@ export function makeDeliverer(
       email: faker.internet.email(),
       phone: faker.phone.number(),
       registeredAt: faker.date.past(),
-      role: new Role("deliverer"),
+      role: new Role("DELIVERER"),
       status: Status.ACTIVE,
       updatedAt: faker.date.past(),
       ...overrideUserProps
@@ -47,4 +50,19 @@ export function makeDeliverer(
   deliveryMan.vehicle = Vehicle.create(makeVehicle({ delivererId: deliveryMan.id }))
 
   return deliveryMan
+}
+
+@Injectable()
+export class DelivererFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaDeliverer(delivererProps: Partial<DelivererProps> = {}, userProps: Partial<UserProps> = {}) {
+    const deliverer = makeDeliverer(delivererProps, userProps)
+
+    await this.prisma.deliverer.create({
+      data: PrismaDelivererMapper.toPersistence(deliverer)
+    })
+
+    return deliverer
+  }
 }

@@ -6,17 +6,17 @@ import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Public } from "@/infra/auth/public";
 
 const authenticateDelivererSchema = z.object({
-  cpf: z.string().length(11),
+  cpf: z.string(),
   password: z.string().min(6),
 })
 
 type AuthenticateDelivererSchema = z.infer<typeof authenticateDelivererSchema>
 
-@Controller('/deliverers')
+@Controller()
 export class AuthenticateDelivererController {
   constructor(private authenticateDelivererUseCase: AuthenticateDelivererUseCase) {}
 
-  @Post("/authenticate")
+  @Post("/sessions/deliverers")
   @HttpCode(201)
   @Public()
   @UsePipes(new ZodValidationPipe(authenticateDelivererSchema))
@@ -29,6 +29,7 @@ export class AuthenticateDelivererController {
       cpf,
       password
     })
+
 
     if(result.isLeft()) {
       const error = result.value

@@ -56,6 +56,17 @@ model Deliverer {
   @@map("deliverers")
 }
 
+model DelivererToken {
+  id          String   @id @default(uuid())
+  delivererId String   @map("deliverer_id")
+  token       String
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("deliverer_tokens")
+}
+
 model Recipient {
   id       String @id @default(uuid())
   name     String

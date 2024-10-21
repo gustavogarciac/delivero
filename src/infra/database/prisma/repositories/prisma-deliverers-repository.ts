@@ -25,25 +25,95 @@ export class PrismaDeliverersRepository implements DeliverersRepository {
 
     return PrismaDelivererMapper.toDomain(deliverer)
   }
-  findById(id: string): Promise<Deliverer | null> {
-    throw new Error("Method not implemented.");
+  async findById(id: string): Promise<Deliverer | null> {
+    const deliverer = await this.prisma.deliverer.findUnique({
+      where: {
+        id
+      },
+      include: {
+        orders: true,
+        vehicle: true
+      }
+    })
+
+    if(!deliverer) {
+      return null
+    }
+
+    return PrismaDelivererMapper.toDomain(deliverer)
   }
-  findMany(params: PaginationParams): Promise<{ items: Deliverer[]; total?: number; }> {
-    throw new Error("Method not implemented.");
+  async findMany(params: PaginationParams): Promise<{ items: Deliverer[]; total?: number; }> {
+    const { page, perPage, count, query } = params
+
+    return this.prisma.deliverer.findMany({
+      where: {
+        name: {
+          contains: query
+        }
+      },
+      include: {
+        orders: true,
+        vehicle: true
+      },
+      skip: (page - 1) * perPage,
+      take: perPage,
+      orderBy: {
+        registeredAt: "desc"
+      }
+    }).then(deliverers => {
+      return {
+        items: deliverers.map(PrismaDelivererMapper.toDomain),
+        total: count ? deliverers.length : undefined
+      }
+    })
   }
-  findByEmail(email: string): Promise<Deliverer | null> {
-    throw new Error("Method not implemented.");
+  async findByEmail(email: string): Promise<Deliverer | null> {
+    const deliverer = await this.prisma.deliverer.findUnique({
+      where: {
+        email
+      },
+      include: {
+        orders: true,
+        vehicle: true
+      }
+    })
+
+    if(!deliverer) {
+      return null
+    }
+
+    return PrismaDelivererMapper.toDomain(deliverer)
   }
-  create(deliverer: Deliverer): Promise<void> {
-    throw new Error("Method not implemented.");
+  async create(deliverer: Deliverer): Promise<void> {
+    await this.prisma.deliverer.create({
+      data: PrismaDelivererMapper.toPersistence(deliverer)
+    })
   }
-  delete(deliverer: Deliverer): Promise<void> {
-    throw new Error("Method not implemented.");
+  async delete(deliverer: Deliverer): Promise<void> {
+    await this.prisma.deliverer.delete({
+      where: {
+        id: deliverer.id.toString()
+      }
+    })
   }
-  save(deliverer: Deliverer): Promise<void> {
-    throw new Error("Method not implemented.");
+  async save(deliverer: Deliverer): Promise<void> {
+    await this.prisma.deliverer.update({
+      where: {
+        id: deliverer.id.toString()
+      },
+      data: PrismaDelivererMapper.toPersistence(deliverer)
+    })
   }
-  incrementDeliveriesCount(delivererId: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async incrementDeliveriesCount(delivererId: string): Promise<void> {
+    await this.prisma.deliverer.update({
+      where: {
+        id: delivererId
+      },
+      data: {
+        deliveriesCount: {
+          increment: 1
+        }
+      }
+    })
   }
 }

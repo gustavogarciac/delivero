@@ -1,16 +1,17 @@
-enum Roles {
-  ADMIN = 'admin',
-  DELIVERER = 'deliverer',
+export enum Roles {
+  ADMIN = 'ADMIN',
+  DELIVERER = 'DELIVERER',
+  RECIPIENT = 'RECIPIENT',
 }
 
 export class Role {
-  private type: Roles;
+  public type: Roles;
 
   isAdmin() {
     return this.type === Roles.ADMIN;
   }
 
-  constructor(type: "admin" | "deliverer") {
+  constructor(type: "ADMIN" | "DELIVERER") {
     switch (type) {
       case Roles.ADMIN:
         this.type = Roles.ADMIN;

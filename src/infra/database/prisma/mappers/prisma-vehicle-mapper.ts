@@ -3,7 +3,9 @@ import { Vehicle, VehicleType } from "@/domain/logistics/enterprise/entities/veh
 import { Vehicle as PrismaVehicle } from "@prisma/client";
 
 export class PrismaVehicleMapper {
-  static toDomain(prismaVehicle: PrismaVehicle): Vehicle {
+  static toDomain(prismaVehicle: PrismaVehicle): Vehicle | null {
+    if(!prismaVehicle) return null
+
     const vehicle = Vehicle.create({
       capacity: prismaVehicle.capacity,
       color: prismaVehicle.color,
