@@ -7,18 +7,22 @@ import { ConfirmDelivererPasswordResetController } from "./deliverers/confirm-de
 import { ConfirmDelivererPasswordResetUseCase } from "@/domain/logistics/application/use-cases/deliverer/confirm-deliverer-password-reset";
 import { CreateDelivererController } from "./deliverers/create-delivery-man.controller";
 import { CreateDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/create-delivery-man";
+import { DeleteDelivererController } from "./deliverers/delete-deliverer.controller";
+import { DeleteDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/delete-delivery-man";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
   controllers: [
     AuthenticateDelivererController, 
     ConfirmDelivererPasswordResetController,
-    CreateDelivererController
+    CreateDelivererController,
+    DeleteDelivererController
   ],
   providers: [
     AuthenticateDelivererUseCase, 
     ConfirmDelivererPasswordResetUseCase,
-    CreateDelivererUseCase
+    CreateDelivererUseCase,
+    DeleteDelivererUseCase
   ]
 })
 export class DelivererModule {}
