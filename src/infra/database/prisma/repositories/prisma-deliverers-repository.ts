@@ -45,27 +45,65 @@ export class PrismaDeliverersRepository implements DeliverersRepository {
   async findMany(params: PaginationParams): Promise<{ items: Deliverer[]; total?: number; }> {
     const { page, perPage, count, query } = params
 
-    return this.prisma.deliverer.findMany({
-      where: {
-        name: {
-          contains: query
+    if(query) {
+      const deliverers = await this.prisma.deliverer.findMany({
+        where: {
+          name: {
+            contains: query
+          }
+        },
+        include: {
+          orders: true,
+          vehicle: true
+        },
+        skip: (page - 1) * perPage,
+        take: perPage,
+        orderBy: {
+          registeredAt: "desc"
         }
-      },
+      })
+
+      return {
+        items: deliverers.map(PrismaDelivererMapper.toDomain),
+        total: count ? deliverers.length : undefined
+      }
+    }
+    
+    const deliverers = await this.prisma.deliverer.findMany({
       include: {
         orders: true,
         vehicle: true
       },
       skip: (page - 1) * perPage,
       take: perPage,
-      orderBy: {
-        registeredAt: "desc"
-      }
-    }).then(deliverers => {
-      return {
-        items: deliverers.map(PrismaDelivererMapper.toDomain),
-        total: count ? deliverers.length : undefined
-      }
     })
+
+    return {
+      items: deliverers.map(PrismaDelivererMapper.toDomain),
+      total: count ? deliverers.length : undefined
+    }
+
+    // return this.prisma.deliverer.findMany({
+    //   where: {
+    //     name: {
+    //       contains: query
+    //     }
+    //   },
+    //   include: {
+    //     orders: true,
+    //     vehicle: true
+    //   },
+    //   skip: (page - 1) * perPage,
+    //   take: perPage,
+    //   orderBy: {
+    //     registeredAt: "desc"
+    //   }
+    // }).then(deliverers => {
+    //   return {
+    //     items: deliverers.map(PrismaDelivererMapper.toDomain),
+    //     total: count ? deliverers.length : undefined
+    //   }
+    // })
   }
   async findByEmail(email: string): Promise<Deliverer | null> {
     const deliverer = await this.prisma.deliverer.findUnique({

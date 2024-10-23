@@ -9,20 +9,24 @@ import { CreateDelivererController } from "./deliverers/create-delivery-man.cont
 import { CreateDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/create-delivery-man";
 import { DeleteDelivererController } from "./deliverers/delete-deliverer.controller";
 import { DeleteDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/delete-delivery-man";
+import { FetchDeliverersController } from "./deliverers/fetch-deliverer.controller";
+import { FetchDeliverersUseCase } from "@/domain/logistics/application/use-cases/deliverer/fetch-delivery-men";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
   controllers: [
-    AuthenticateDelivererController, 
+    AuthenticateDelivererController,
     ConfirmDelivererPasswordResetController,
     CreateDelivererController,
-    DeleteDelivererController
+    DeleteDelivererController,
+    FetchDeliverersController
   ],
   providers: [
     AuthenticateDelivererUseCase, 
     ConfirmDelivererPasswordResetUseCase,
     CreateDelivererUseCase,
-    DeleteDelivererUseCase
+    DeleteDelivererUseCase,
+    FetchDeliverersUseCase
   ]
 })
 export class DelivererModule {}
