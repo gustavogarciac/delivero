@@ -15,6 +15,8 @@ import { GetDelivererProfileController } from "./deliverers/get-deliverer-profil
 import { GetDelivererProfileUseCase } from "@/domain/logistics/application/use-cases/deliverer/get-delivery-man-profile";
 import { GetNearOrdersController } from "./deliverers/get-near-orders.controller";
 import { GetNearOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/get-near-orders";
+import { ListDelivererOrdersController } from "./deliverers/list-deliverer-orders.controller";
+import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-orders";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -25,7 +27,8 @@ import { GetNearOrdersUseCase } from "@/domain/logistics/application/use-cases/d
     DeleteDelivererController,
     FetchDeliverersController,
     GetDelivererProfileController,
-    GetNearOrdersController
+    GetNearOrdersController,
+    ListDelivererOrdersController
   ],
   providers: [
     AuthenticateDelivererUseCase,
@@ -34,7 +37,8 @@ import { GetNearOrdersUseCase } from "@/domain/logistics/application/use-cases/d
     DeleteDelivererUseCase,
     FetchDeliverersUseCase,
     GetDelivererProfileUseCase,
-    GetNearOrdersUseCase
+    GetNearOrdersUseCase,
+    ListOrdersUseCase
   ]
 })
 export class DelivererModule {}

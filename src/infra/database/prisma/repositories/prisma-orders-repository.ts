@@ -5,6 +5,7 @@ import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-ob
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
 import { calculateDistanceInQuilometers } from "@/core/haversine";
+import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -47,8 +48,21 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
     return orders;
   }
-  findManyByDelivererId(params: PaginationParams, delivererId: string): Promise<{ items: Order[]; total?: number; }> {
-    throw new Error("Method not implemented.");
+  async findManyByDelivererId(params: PaginationParams, delivererId: string): Promise<{ items: Order[]; total?: number; }> {
+    const { page, perPage, count } = params;
+  
+    const orders = await this.prisma.order.findMany({
+      where: {
+        delivererId
+      },
+      take: perPage,
+      skip: (page - 1) * perPage
+    })
+
+    return {
+      items: orders.map(PrismaOrderMapper.toDomain),
+      total: count ? await this.prisma.order.count({ where: { delivererId } }) : undefined
+    }
   }
   
 }

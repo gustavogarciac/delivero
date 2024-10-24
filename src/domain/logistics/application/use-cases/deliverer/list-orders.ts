@@ -3,6 +3,7 @@ import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Order } from "@/domain/logistics/enterprise/entities/order"
 import { OrdersRepository } from "../../repositories/orders-repository"
+import { Injectable } from "@nestjs/common"
 
 interface ListOrdersUseCaseRequest {
   delivererId: string
@@ -13,6 +14,7 @@ interface ListOrdersUseCaseRequest {
 
 type ListOrdersUseCaseResponse = Either<BadRequestError, { items: Order[], total?: number }>
 
+@Injectable()
 export class ListOrdersUseCase {
   constructor(private deliverersRepository: DeliverersRepository, private ordersRepository: OrdersRepository) {}
 
