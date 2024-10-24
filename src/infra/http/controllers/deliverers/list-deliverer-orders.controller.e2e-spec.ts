@@ -50,7 +50,14 @@ describe("List Deliverer Orders (e2e)", () => {
     })
 
     expect(response.statusCode).toBe(200)
-
-    expect(response.body.items).toHaveLength(10)
+    expect(response.body).toEqual({
+      orders: expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(String),
+          delivererId: deliverer.id.toString(),
+        })
+      ]),
+      total: 10
+    })
   })
 })

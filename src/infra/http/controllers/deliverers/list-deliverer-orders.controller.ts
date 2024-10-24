@@ -4,6 +4,7 @@ import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-orders";
 import { PrismaOrderMapper } from "@/infra/database/prisma/mappers/prisma-order-mapper";
+import { OrderPresenter } from "../../presenters/order-presenter";
 
 const listDelivererOrdersQuerySchema = z.object({
   page: z.coerce.number().default(1),
@@ -51,8 +52,8 @@ export class ListDelivererOrdersController {
       } 
     }
 
-    const orders = result.value
+    const { items, total } = result.value
 
-    return orders
+    return { orders: items.map(OrderPresenter.toHttp), total }
   }
 }
