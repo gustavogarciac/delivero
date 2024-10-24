@@ -115,7 +115,7 @@ model Order {
   deliveryAddress String      @map("delivery_address")
   latitude        Float
   longitude       Float
-  trackingCode    String      @unique @map("tracking_code")
+  trackingCode    String?     @unique @map("tracking_code")
   notes           String?
   pickedAt        DateTime?   @map("picked_at")
   deliveredAt     DateTime?   @map("delivered_at")

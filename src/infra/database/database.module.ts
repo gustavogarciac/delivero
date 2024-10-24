@@ -3,8 +3,9 @@ import { PrismaService } from './prisma/prisma.service';
 import { DeliverersRepository } from '@/domain/logistics/application/repositories/deliverers-repository';
 import { PrismaDeliverersRepository } from './prisma/repositories/prisma-deliverers-repository';
 import { DelivererTokenRepository } from '@/domain/logistics/application/repositories/deliverer-tokens-repository';
-import { PrismaDelivererTokenMapper } from './prisma/mappers/prisma-deliverer-token-mapper';
 import { PrismaDelivererTokensRepository } from './prisma/repositories/prisma-deliverer-tokens-repository';
+import { PrismaOrdersRepository } from './prisma/repositories/prisma-orders-repository';
+import { OrdersRepository } from '@/domain/logistics/application/repositories/orders-repository';
 
 @Module({
   providers: [
@@ -16,8 +17,12 @@ import { PrismaDelivererTokensRepository } from './prisma/repositories/prisma-de
     {
       provide: DelivererTokenRepository, 
       useClass: PrismaDelivererTokensRepository
+    },
+    {
+      provide: OrdersRepository,
+      useClass: PrismaOrdersRepository
     }
   ],
-  exports: [PrismaService, DeliverersRepository, DelivererTokenRepository],
+  exports: [PrismaService, DeliverersRepository, DelivererTokenRepository, OrdersRepository],
 })
 export class DatabaseModule {}

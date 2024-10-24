@@ -3,6 +3,11 @@ import { Order, OrderProps, OrderStatus } from "@/domain/logistics/enterprise/en
 import { makeDeliverer } from "./make-deliverer";
 import { faker } from "@faker-js/faker";
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
+import { PrismaDelivererMapper } from "@/infra/database/prisma/mappers/prisma-deliverer-mapper";
+import { Injectable } from "@nestjs/common";
+import { PrismaOrderMapper } from "@/infra/database/prisma/mappers/prisma-order-mapper";
+import { RecipientFactory } from "./make-recipient";
 
 function randomStatus(): OrderStatus {
   const status = Object.values(OrderStatus) as OrderStatus[];
@@ -34,4 +39,22 @@ export function makeOrder(
   }, id)
 
   return order
+}
+
+@Injectable()
+export class OrderFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaOrder(override: Partial<OrderProps> = {}) {
+
+    const order = makeOrder(override)
+
+    await this.prisma.order.create({
+      data: {
+        ...PrismaOrderMapper.toPersistence(order),
+      }
+    })
+
+    return order
+  }
 }

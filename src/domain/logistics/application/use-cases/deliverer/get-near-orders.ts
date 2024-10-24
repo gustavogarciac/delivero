@@ -7,6 +7,7 @@ import { Hasher } from "../../cryptography/hasher"
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization"
 import { Order } from "@/domain/logistics/enterprise/entities/order"
 import { OrdersRepository } from "../../repositories/orders-repository"
+import { Injectable } from "@nestjs/common"
 
 interface GetNearOrdersUseCaseRequest {
   delivererId: string
@@ -17,6 +18,7 @@ interface GetNearOrdersUseCaseRequest {
 
 type GetNearOrdersUseCaseResponse = Either<BadRequestError, { orders: Order[] }>
 
+@Injectable()
 export class GetNearOrdersUseCase {
   constructor(private deliverersRepository: DeliverersRepository, private ordersRepository: OrdersRepository) {}
 

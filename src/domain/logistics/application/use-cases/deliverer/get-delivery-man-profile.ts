@@ -1,14 +1,15 @@
 import { Either, left, right } from "@/core/either"
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
-import { BadRequestError } from "@/core/errors/bad-request-error"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
+import { Injectable } from "@nestjs/common"
 
 interface GetDelivererProfileUseCaseRequest {
   delivererId: string
 }
 
-type GetDelivererProfileUseCaseResponse = Either<BadRequestError, { deliverer }>
+type GetDelivererProfileUseCaseResponse = Either<ResourceNotFoundError, { deliverer }>
 
+@Injectable()
 export class GetDelivererProfileUseCase {
   constructor(private deliverersRepository: DeliverersRepository) {}
 

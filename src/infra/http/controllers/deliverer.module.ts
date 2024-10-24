@@ -11,6 +11,10 @@ import { DeleteDelivererController } from "./deliverers/delete-deliverer.control
 import { DeleteDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/delete-delivery-man";
 import { FetchDeliverersController } from "./deliverers/fetch-deliverer.controller";
 import { FetchDeliverersUseCase } from "@/domain/logistics/application/use-cases/deliverer/fetch-delivery-men";
+import { GetDelivererProfileController } from "./deliverers/get-deliverer-profile.controller";
+import { GetDelivererProfileUseCase } from "@/domain/logistics/application/use-cases/deliverer/get-delivery-man-profile";
+import { GetNearOrdersController } from "./deliverers/get-near-orders.controller";
+import { GetNearOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/get-near-orders";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -19,14 +23,18 @@ import { FetchDeliverersUseCase } from "@/domain/logistics/application/use-cases
     ConfirmDelivererPasswordResetController,
     CreateDelivererController,
     DeleteDelivererController,
-    FetchDeliverersController
+    FetchDeliverersController,
+    GetDelivererProfileController,
+    GetNearOrdersController
   ],
   providers: [
-    AuthenticateDelivererUseCase, 
+    AuthenticateDelivererUseCase,
     ConfirmDelivererPasswordResetUseCase,
     CreateDelivererUseCase,
     DeleteDelivererUseCase,
-    FetchDeliverersUseCase
+    FetchDeliverersUseCase,
+    GetDelivererProfileUseCase,
+    GetNearOrdersUseCase
   ]
 })
 export class DelivererModule {}

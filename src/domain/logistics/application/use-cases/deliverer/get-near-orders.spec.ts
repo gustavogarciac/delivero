@@ -26,15 +26,18 @@ describe("Get Near Orders Use Case", async () => {
       status: OrderStatus.AWAITING_PICKUP,
       geo: Geolocalization.create({ latitude: -29.9159783, longitude: -50.2606405 })
     }))
+    
+    const farOrder = makeOrder({ delivererId: null, status: OrderStatus.AWAITING_PICKUP, geo: Geolocalization.create({ latitude: -21.8924665, longitude: -43.2488092 }) })
 
     await deliverersRepository.items.push(deliverer)
+    await ordersRepository.items.push(farOrder)
     await ordersRepository.items.push(...orders)
 
     const response = await sut.execute({ 
       delivererId: deliverer.id.toString(),
       latitude: -29.8924665, 
       longitude: -50.2488092, 
-      maxDistance: 1000
+      maxDistance: 5
     })
 
     expect(response.isRight()).toBeTruthy()
