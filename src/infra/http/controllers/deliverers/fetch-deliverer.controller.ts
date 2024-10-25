@@ -3,6 +3,7 @@ import { FetchDeliverersUseCase } from "@/domain/logistics/application/use-cases
 import { PaginationParams } from "@/core/repositories/pagination";
 import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
+import { DelivererPresenter } from "../../presenters/deliverer-presenter";
 
 const paginationQueryParamSchema = z.object({
   page: z
@@ -43,6 +44,6 @@ export class FetchDeliverersController {
 
     const deliverers = result.value
 
-    return { deliverers }
+    return { deliverers: deliverers?.items.map(DelivererPresenter.toHttp), total: deliverers?.total }
   }
 }

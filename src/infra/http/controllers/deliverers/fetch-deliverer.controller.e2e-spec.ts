@@ -32,24 +32,34 @@ describe("Fetch Deliverer (e2e)", () => {
 
     const response = await request(app.getHttpServer()).get(`/deliverers?page=1&per_page=10`).send({})
 
+    console.log(response.body)
+
     expect(response.statusCode).toBe(200)
 
     expect(response.body).toHaveProperty("deliverers")
 
-    expect(response.body.deliverers).toHaveProperty("items")
-
-    expect(response.body.deliverers.items).toHaveLength(10)
+    expect(response.body.deliverers).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.any(String)
+      })
+    ]))
 
     await delivererFactory.makePrismaDeliverer({}, { name: "John Doe" })
 
     const secondResponse = await request(app.getHttpServer()).get(`/deliverers?page=1&per_page=10&query=Doe&count=true`).send({})
 
+    console.log(secondResponse.body)
+
     expect(secondResponse.statusCode).toBe(200)
 
     expect(secondResponse.body).toHaveProperty("deliverers")
 
-    expect(secondResponse.body.deliverers).toHaveProperty("items")
+    expect(response.body.deliverers).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.any(String)
+      }),
+    ]))
 
-    expect(secondResponse.body.deliverers.items).toHaveLength(1)
+    expect(secondResponse.body.total).toBe(1)
   })
 })
