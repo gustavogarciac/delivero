@@ -1,10 +1,12 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, Param, Query, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, Param, Query, UnauthorizedException, UsePipes } from "@nestjs/common";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-orders";
 import { PrismaOrderMapper } from "@/infra/database/prisma/mappers/prisma-order-mapper";
 import { OrderPresenter } from "../../presenters/order-presenter";
+import { CurrentUser } from "@/infra/auth/current-user-decorator";
+import { UserPayload } from "@/infra/auth/jwt.strategy";
 
 const listDelivererOrdersQuerySchema = z.object({
   page: z.coerce.number().default(1),
@@ -29,9 +31,16 @@ export class ListDelivererOrdersController {
   @Get("/deliverers/:delivererId/orders")
   @HttpCode(200)
   async handle(
+    @CurrentUser() user: UserPayload,
     @Query(listDelivererOrdersQuerySchemaPipe) query: ListDelivererOrdersQuerySchema,
     @Param(listDelivererOrdersParamSchemaPipe) { delivererId }: ListDelivererOrdersParamSchema
   ) {
+    const userId = user.sub
+
+    if(userId !== delivererId) {
+      throw new UnauthorizedException("You can only list your own orders")
+    }
+
     const { page, perPage, count } = query
 
     const result = await this.listDelivererOrdersUseCase.execute({ 

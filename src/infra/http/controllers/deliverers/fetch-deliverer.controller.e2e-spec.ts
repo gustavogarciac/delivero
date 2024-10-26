@@ -5,11 +5,13 @@ import { AppModule } from "@/infra/app.module"
 import { DatabaseModule } from "@/infra/database/database.module"
 import request from "supertest"
 import { PrismaService } from "@/infra/database/prisma/prisma.service"
+import { JwtService } from "@nestjs/jwt"
 
 describe("Fetch Deliverer (e2e)", () => {
   let app: INestApplication
   let prismaService: PrismaService
   let delivererFactory: DelivererFactory
+  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -22,15 +24,23 @@ describe("Fetch Deliverer (e2e)", () => {
     prismaService = moduleRef.get<PrismaService>(PrismaService)
     delivererFactory = moduleRef.get<DelivererFactory>(DelivererFactory)
 
+    jwt = moduleRef.get(JwtService)
+
     await app.init()
   })
 
   test("[GET] /deliverers", async () => {
+    const deliverer = await delivererFactory.makePrismaDeliverer()
     for (let i = 0; i < 20; i++) {
       await delivererFactory.makePrismaDeliverer()
     }
 
-    const response = await request(app.getHttpServer()).get(`/deliverers?page=1&per_page=10`).send({})
+    const accessToken = jwt.sign({ sub: deliverer.id.toString() })
+
+    const response = await request(app.getHttpServer())
+      .get(`/deliverers?page=1&per_page=10`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({})
 
     expect(response.statusCode).toBe(200)
 
@@ -44,7 +54,10 @@ describe("Fetch Deliverer (e2e)", () => {
 
     await delivererFactory.makePrismaDeliverer({}, { name: "John Doe" })
 
-    const secondResponse = await request(app.getHttpServer()).get(`/deliverers?page=1&per_page=10&query=Doe&count=true`).send({})
+    const secondResponse = await request(app.getHttpServer())
+      .get(`/deliverers?page=1&per_page=10&query=Doe&count=true`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({})
 
     expect(secondResponse.statusCode).toBe(200)
 

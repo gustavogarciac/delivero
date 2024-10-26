@@ -3,6 +3,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { ResetDelivererPasswordUseCase } from "@/domain/logistics/application/use-cases/deliverer/reset-password";
+import { Public } from "@/infra/auth/public";
 
 const resetDelivererPasswordSchema = z.object({
   email: z.string().email()
@@ -15,6 +16,7 @@ export class ResetDelivererPasswordController {
   constructor(private resetDelivererPasswordUseCase: ResetDelivererPasswordUseCase) {}
 
   @Post("/sessions/deliverers/reset-password")
+  @Public()
   @HttpCode(201)
   async handle(
     @Body(new ZodValidationPipe(resetDelivererPasswordSchema)) body: ResetDelivererPasswordSchema

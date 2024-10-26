@@ -7,34 +7,38 @@ import request from "supertest"
 import { FactoriesModule } from "@/infra/factories/factories.module"
 import { MailerModule } from "@/infra/mailer/mailer.module"
 import { MailService } from "@/infra/mailer/nodemailer"
-import { EnvService } from "@/infra/env/env.service"
 import { EnvModule } from "@/infra/env/env.module"
+import { JwtService } from "@nestjs/jwt"
 
 describe("Reset Deliverer Password (e2e)", () => {
   let app: INestApplication
   let delivererFactory: DelivererFactory
-  let mailer: MailService
+  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule, FactoriesModule, MailerModule, EnvModule],
-      providers: [DelivererFactory, MailService]
+      imports: [AppModule, DatabaseModule, FactoriesModule],
+      providers: [DelivererFactory]
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     delivererFactory = moduleRef.get<DelivererFactory>(DelivererFactory)
-    mailer = moduleRef.get<MailService>(MailService)
+    jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
   test("[POST] /sessions/deliverers/reset-password", async () => {
     const deliverer = await delivererFactory.makePrismaDeliverer()
+    const accessToken = jwt.sign({ sub: deliverer.id.toString() })
   
-    const response = await request(app.getHttpServer()).post(`/sessions/deliverers/reset-password`).send({
-      email: deliverer.email
-    })
+    const response = await request(app.getHttpServer())
+      .post(`/sessions/deliverers/reset-password`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        email: deliverer.email
+      })
 
     expect(response.statusCode).toBe(201)
 

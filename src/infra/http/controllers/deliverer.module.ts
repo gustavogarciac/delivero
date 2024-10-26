@@ -24,6 +24,8 @@ import { ResetDelivererPasswordUseCase } from "@/domain/logistics/application/us
 import { MailerModule } from "@/infra/mailer/mailer.module";
 import { UpdateDelivererController } from "./deliverers/update-deliverer.controller";
 import { UpdateDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/update-deliverer";
+import { APP_GUARD } from "@nestjs/core";
+import { JwtAuthGuard } from "@/infra/auth/jwt-auth-guard";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
@@ -41,6 +43,10 @@ import { UpdateDelivererUseCase } from "@/domain/logistics/application/use-cases
     UpdateDelivererController
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    },
     AuthenticateDelivererUseCase,
     ConfirmDelivererPasswordResetUseCase,
     CreateDelivererUseCase,

@@ -10,6 +10,7 @@ import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-ob
 import { RecipientFactory } from "test/factories/make-recipient"
 import { FactoriesModule } from "@/infra/factories/factories.module"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
+import { JwtService } from "@nestjs/jwt"
 
 describe("Get Deliverer Profile (e2e)", () => {
   let app: INestApplication
@@ -17,6 +18,7 @@ describe("Get Deliverer Profile (e2e)", () => {
   let delivererFactory: DelivererFactory
   let recipientFactory: RecipientFactory
   let orderFactory: OrderFactory
+  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -31,6 +33,8 @@ describe("Get Deliverer Profile (e2e)", () => {
     recipientFactory = moduleRef.get<RecipientFactory>(RecipientFactory)
     orderFactory = moduleRef.get<OrderFactory>(OrderFactory)
 
+    jwt = moduleRef.get(JwtService)
+
     await app.init()
   })
 
@@ -41,7 +45,12 @@ describe("Get Deliverer Profile (e2e)", () => {
     await orderFactory.makePrismaOrder({ delivererId: deliverer.id, geo: Geolocalization.create({ latitude: -23.5505199, longitude: -46.63330939999999 }), recipientId: recipient.id, status: OrderStatus.PREPARING })
     await orderFactory.makePrismaOrder({ delivererId: deliverer.id, geo: Geolocalization.create({ latitude: -21.2201923, longitude: -33.23123123123123 }), recipientId: recipient.id, status: OrderStatus.AWAITING_PICKUP })
 
-    const response = await request(app.getHttpServer()).get(`/near-orders`).send({
+    const accessToken = jwt.sign({ sub: deliverer.id.toString() })
+
+    const response = await request(app.getHttpServer())
+    .get(`/near-orders`)
+    .set("Authorization", `Bearer ${accessToken}`)
+    .send({
       latitude: -23.5505199,
       longitude: -46.63330939999999,
       maxDistance: 1000,

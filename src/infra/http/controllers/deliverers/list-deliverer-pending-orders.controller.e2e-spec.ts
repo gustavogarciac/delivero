@@ -10,12 +10,14 @@ import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-ob
 import { RecipientFactory } from "test/factories/make-recipient"
 import { FactoriesModule } from "@/infra/factories/factories.module"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
+import { JwtService } from "@nestjs/jwt"
 
 describe("List Deliverer Pending Orders (e2e)", () => {
   let app: INestApplication
   let delivererFactory: DelivererFactory
   let recipientFactory: RecipientFactory
   let orderFactory: OrderFactory
+  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -28,6 +30,7 @@ describe("List Deliverer Pending Orders (e2e)", () => {
     delivererFactory = moduleRef.get<DelivererFactory>(DelivererFactory)
     recipientFactory = moduleRef.get<RecipientFactory>(RecipientFactory)
     orderFactory = moduleRef.get<OrderFactory>(OrderFactory)
+    jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
@@ -35,6 +38,8 @@ describe("List Deliverer Pending Orders (e2e)", () => {
   test("[GET] /deliverers/:delivererId/orders/pending", async () => {
     const deliverer = await delivererFactory.makePrismaDeliverer()
     const recipient = await recipientFactory.makePrismaRecipient()
+
+    const accessToken = jwt.sign({ sub: deliverer.id.toString() })
     
     for(let i = 0; i < 10; i++) {
       await orderFactory.makePrismaOrder({
@@ -44,11 +49,14 @@ describe("List Deliverer Pending Orders (e2e)", () => {
       })
     }
 
-    const response = await request(app.getHttpServer()).get(`/deliverers/${deliverer.id.toString()}/orders/pending`).query({
-      page: 1,
-      perPage: 10,
-      count: true
-    })
+    const response = await request(app.getHttpServer())
+      .get(`/deliverers/${deliverer.id.toString()}/orders/pending`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .query({
+        page: 1,
+        perPage: 10,
+        count: true
+      })
 
     expect(response.statusCode).toBe(200)
 

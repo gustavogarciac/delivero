@@ -1,8 +1,10 @@
-import { BadRequestException, Controller, Delete, HttpCode, NotFoundException, Param, UsePipes } from "@nestjs/common";
+import { BadRequestException, Controller, Delete, HttpCode, NotFoundException, Param, UnauthorizedException, UsePipes } from "@nestjs/common";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { DeleteDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/delete-delivery-man";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { CurrentUser } from "@/infra/auth/current-user-decorator";
+import { UserPayload } from "@/infra/auth/jwt.strategy";
 
 const deleteDelivererSchema = z.object({
   delivererId: z.string()

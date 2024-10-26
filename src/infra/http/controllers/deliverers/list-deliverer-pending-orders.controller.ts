@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, HttpCode, Param, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpCode, Param, Query, UnauthorizedException } from "@nestjs/common";
 import { PaginationParams } from "@/core/repositories/pagination";
 import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
@@ -6,6 +6,8 @@ import { DelivererPresenter } from "../../presenters/deliverer-presenter";
 import { ListPendingOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-pending-orders";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { OrderPresenter } from "../../presenters/order-presenter";
+import { CurrentUser } from "@/infra/auth/current-user-decorator";
+import { UserPayload } from "@/infra/auth/jwt.strategy";
 
 const paginationQueryParamSchema = z.object({
   page: z
@@ -46,11 +48,18 @@ export class ListDelivererPendingOrdersController {
   @Get("/deliverers/:delivererId/orders/pending")
   @HttpCode(200)
   async handle(
+    @CurrentUser() user: UserPayload,
     @Query(paginationQueryValidationPipe) paginationParams: PaginationQueryParamSchema,
     @Param(listDelivererPendingOrdersParamSchemaValidationPipe) params: ListDelivererPendingOrdersParamSchema
   ) {
     const { page, per_page: perPage, count } = paginationParams
     const { delivererId } = params
+
+    const userId = user.sub
+
+    if(userId !== delivererId) {
+      throw new UnauthorizedException("You can only list your own orders")
+    }
 
     const result = await this.listDelivererPendingOrdersUseCase.execute({ page, perPage, count, delivererId })
 
