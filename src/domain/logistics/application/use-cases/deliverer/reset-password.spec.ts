@@ -1,11 +1,6 @@
 import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
 import { makeDeliverer } from "test/factories/make-deliverer"
-import { InMemoryOrdersRepository } from "test/repositories/in-memory-orders-repository"
-import { makeOrder } from "test/factories/make-order"
-import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
-import { ListPendingOrdersUseCase } from "./list-pending-orders"
 import { ResetDelivererPasswordUseCase } from "./reset-password"
-import { FakeEncrypter } from "test/cryptography/fake-encrypter"
 import { FakeMailer } from "test/mailer/mailer"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { InMemoryDelivererTokenRepository } from "test/repositories/in-memory-deliverer-tokens-repository"
@@ -34,7 +29,7 @@ describe("Reset deliverer password use case", async () => {
 
     expect(response.isRight()).toBe(true)
 
-    expect(response.value).toEqual({ otp: expect.any(String) })
+    expect(response.value).toEqual({ otp: expect.any(String), sentEmail: true })
 
     expect(delivererTokensRepository.items).toHaveLength(1)
     expect(delivererTokensRepository.items[0].delivererId).toBe(deliverer.id.toString())

@@ -22,6 +22,8 @@ import { ListPendingOrdersUseCase } from "@/domain/logistics/application/use-cas
 import { ResetDelivererPasswordController } from "./deliverers/reset-deliverer-password.controller";
 import { ResetDelivererPasswordUseCase } from "@/domain/logistics/application/use-cases/deliverer/reset-password";
 import { MailerModule } from "@/infra/mailer/mailer.module";
+import { UpdateDelivererController } from "./deliverers/update-deliverer.controller";
+import { UpdateDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/update-deliverer";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
@@ -35,7 +37,8 @@ import { MailerModule } from "@/infra/mailer/mailer.module";
     GetNearOrdersController,
     ListDelivererOrdersController,
     ListDelivererPendingOrdersController,
-    ResetDelivererPasswordController
+    ResetDelivererPasswordController,
+    UpdateDelivererController
   ],
   providers: [
     AuthenticateDelivererUseCase,
@@ -47,7 +50,8 @@ import { MailerModule } from "@/infra/mailer/mailer.module";
     GetNearOrdersUseCase,
     ListOrdersUseCase,
     ListPendingOrdersUseCase,
-    ResetDelivererPasswordUseCase
+    ResetDelivererPasswordUseCase,
+    UpdateDelivererUseCase
   ]
 })
 export class DelivererModule {}

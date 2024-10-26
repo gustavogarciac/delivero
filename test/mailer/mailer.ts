@@ -3,8 +3,14 @@ import { Mailer, SendMailRequest } from "@/domain/logistics/application/mailer/m
 export class FakeMailer extends Mailer {
   private sentEmails: SendMailRequest[] = [];
 
-  async send(options: SendMailRequest): Promise<void> {
+  async send(options: SendMailRequest): Promise<SendMailRequest | null> {
     this.sentEmails.push(options);
+
+    if(options.to === "invalid-email") {
+      return null;
+    }
+
+    return options;
   }
 
   getSentEmails(): SendMailRequest[] {
