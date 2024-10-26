@@ -3,6 +3,7 @@ import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { Order, OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 import { OrdersRepository } from "../../repositories/orders-repository"
+import { Injectable } from "@nestjs/common"
 
 interface ListPendingOrdersUseCaseRequest {
   delivererId: string
@@ -13,6 +14,7 @@ interface ListPendingOrdersUseCaseRequest {
 
 type ListPendingOrdersUseCaseResponse = Either<BadRequestError, { items: Order[], total?: number }>
 
+@Injectable()
 export class ListPendingOrdersUseCase {
   constructor(private deliverersRepository: DeliverersRepository, private ordersRepository: OrdersRepository) {}
 
@@ -21,7 +23,7 @@ export class ListPendingOrdersUseCase {
     page,
     perPage,
     count
-  } : ListPendingOrdersUseCaseRequest): Promise<ListPendingOrdersUseCaseResponse> {
+  } : ListPendingOrdersUseCaseRequest): Promise<ListPendingOrdersUseCaseResponse> { 
     const deliverer = await this.deliverersRepository.findById(delivererId)
 
     if(!deliverer) return left(new BadRequestError("Deliverer not found"))

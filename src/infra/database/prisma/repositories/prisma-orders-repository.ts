@@ -17,8 +17,16 @@ export class PrismaOrdersRepository implements OrdersRepository {
   save(order: Order): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  findById(id: string): Promise<Order | null> {
-    throw new Error("Method not implemented.");
+  async findById(id: string): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id
+      }
+    })
+
+    if(!order) return null
+
+    return PrismaOrderMapper.toDomain(order)
   }
   setAsPickedUp(orderId: string, delivererId: string): Promise<void> {
     throw new Error("Method not implemented.");

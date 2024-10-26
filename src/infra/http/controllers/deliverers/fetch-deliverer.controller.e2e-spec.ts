@@ -32,8 +32,6 @@ describe("Fetch Deliverer (e2e)", () => {
 
     const response = await request(app.getHttpServer()).get(`/deliverers?page=1&per_page=10`).send({})
 
-    console.log(response.body)
-
     expect(response.statusCode).toBe(200)
 
     expect(response.body).toHaveProperty("deliverers")
@@ -47,8 +45,6 @@ describe("Fetch Deliverer (e2e)", () => {
     await delivererFactory.makePrismaDeliverer({}, { name: "John Doe" })
 
     const secondResponse = await request(app.getHttpServer()).get(`/deliverers?page=1&per_page=10&query=Doe&count=true`).send({})
-
-    console.log(secondResponse.body)
 
     expect(secondResponse.statusCode).toBe(200)
 

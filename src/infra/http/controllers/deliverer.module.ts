@@ -17,9 +17,14 @@ import { GetNearOrdersController } from "./deliverers/get-near-orders.controller
 import { GetNearOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/get-near-orders";
 import { ListDelivererOrdersController } from "./deliverers/list-deliverer-orders.controller";
 import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-orders";
+import { ListDelivererPendingOrdersController } from "./deliverers/list-deliverer-pending-orders.controller";
+import { ListPendingOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-pending-orders";
+import { ResetDelivererPasswordController } from "./deliverers/reset-deliverer-password.controller";
+import { ResetDelivererPasswordUseCase } from "@/domain/logistics/application/use-cases/deliverer/reset-password";
+import { MailerModule } from "@/infra/mailer/mailer.module";
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule, MailerModule],
   controllers: [
     AuthenticateDelivererController,
     ConfirmDelivererPasswordResetController,
@@ -28,7 +33,9 @@ import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deli
     FetchDeliverersController,
     GetDelivererProfileController,
     GetNearOrdersController,
-    ListDelivererOrdersController
+    ListDelivererOrdersController,
+    ListDelivererPendingOrdersController,
+    ResetDelivererPasswordController
   ],
   providers: [
     AuthenticateDelivererUseCase,
@@ -38,7 +45,9 @@ import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deli
     FetchDeliverersUseCase,
     GetDelivererProfileUseCase,
     GetNearOrdersUseCase,
-    ListOrdersUseCase
+    ListOrdersUseCase,
+    ListPendingOrdersUseCase,
+    ResetDelivererPasswordUseCase
   ]
 })
 export class DelivererModule {}

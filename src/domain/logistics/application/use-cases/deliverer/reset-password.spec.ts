@@ -8,18 +8,19 @@ import { ResetDelivererPasswordUseCase } from "./reset-password"
 import { FakeEncrypter } from "test/cryptography/fake-encrypter"
 import { FakeMailer } from "test/mailer/mailer"
 import { BadRequestError } from "@/core/errors/bad-request-error"
+import { InMemoryDelivererTokenRepository } from "test/repositories/in-memory-deliverer-tokens-repository"
 
 let deliverersRepository: InMemoryDelivererRepository
-let fakeEncrypter: FakeEncrypter
+let delivererTokensRepository: InMemoryDelivererTokenRepository
 let fakeMailer: FakeMailer
 let sut: ResetDelivererPasswordUseCase
 
 describe("Reset deliverer password use case", async () => {
   beforeEach(async () => {
     deliverersRepository = new InMemoryDelivererRepository()
-    fakeEncrypter = new FakeEncrypter()
+    delivererTokensRepository = new InMemoryDelivererTokenRepository()
     fakeMailer = new FakeMailer()
-    sut = new ResetDelivererPasswordUseCase(deliverersRepository, fakeEncrypter, fakeMailer)
+    sut = new ResetDelivererPasswordUseCase(deliverersRepository, delivererTokensRepository, fakeMailer)
   })
 
   it("should be able to request deliverer's password reset", async () => {
@@ -32,7 +33,11 @@ describe("Reset deliverer password use case", async () => {
     })
 
     expect(response.isRight()).toBe(true)
-    expect(response.value).toEqual({ token: expect.any(String) })
+
+    expect(response.value).toEqual({ otp: expect.any(String) })
+
+    expect(delivererTokensRepository.items).toHaveLength(1)
+    expect(delivererTokensRepository.items[0].delivererId).toBe(deliverer.id.toString())
   })
 
   it("should send an email with the reset link", async () => {
@@ -46,7 +51,7 @@ describe("Reset deliverer password use case", async () => {
 
     expect(fakeMailer.getSentEmails()).toHaveLength(1)
     expect(fakeMailer.getSentEmails()[0].to).toBe(deliverer.email)
-    expect(fakeMailer.getSentEmails()[0].subject).toBe("Password reset")
+    expect(fakeMailer.getSentEmails()[0].subject).toBe("Your password reset code")
   })
 
   it("should not be able to request deliverer's password reset if deliverer does not exist", async () => {

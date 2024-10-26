@@ -5,5 +5,5 @@ export interface SendMailRequest {
 }
 
 export abstract class Mailer {
-  abstract send(options: SendMailRequest): Promise<void>
+  abstract send(options: SendMailRequest): Promise<SendMailRequest | null>
 }
