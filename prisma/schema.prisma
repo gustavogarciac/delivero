@@ -100,6 +100,21 @@ model RecipientToken {
   @@map("recipient_tokens")
 }
 
+model Admin {
+  id       String @id @default(uuid())
+  cpf      String @unique
+  name     String
+  email    String @unique
+  password String
+  phone    String
+  role     Role   @default(ADMIN)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
 model Vehicle {
   id       String      @id @default(uuid())
   plate    String

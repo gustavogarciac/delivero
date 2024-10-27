@@ -5,6 +5,9 @@ import { Status, UserProps } from "@/domain/logistics/enterprise/entities/user";
 import { Cpf } from "@/domain/logistics/enterprise/entities/value-objects/cpf";
 import { faker } from "@faker-js/faker";
 import { Permissions } from "@/domain/logistics/enterprise/entities/permissions/admin";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
+import { PrismaAdminMapper } from "@/infra/database/prisma/mappers/prisma-admin-mapper";
 
 export function makeAdmin(
   overrideAdminProps: Partial<AdminProps> = {},
@@ -36,4 +39,19 @@ export function makeAdmin(
   )
 
   return admin
+}
+
+@Injectable()
+export class AdminFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaAdmin(adminProps: Partial<AdminProps> = {}, userProps: Partial<UserProps> = {}) {
+    const admin = makeAdmin(adminProps, userProps)
+
+    await this.prisma.admin.create({
+      data: PrismaAdminMapper.toPersistence(admin)
+    })
+
+    return admin
+  }
 }

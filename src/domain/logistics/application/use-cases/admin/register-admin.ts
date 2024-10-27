@@ -6,6 +6,7 @@ import { Hasher } from "../../cryptography/hasher"
 import { Permissions } from "@/domain/logistics/enterprise/entities/permissions/admin"
 import { AdminsRepository } from "../../repositories/admins-repository"
 import { Status } from "@/domain/logistics/enterprise/entities/user"
+import { Injectable } from "@nestjs/common"
 
 interface RegisterAdminUseCaseRequest {
   cpf: string
@@ -17,6 +18,7 @@ interface RegisterAdminUseCaseRequest {
 
 type RegisterAdminUseCaseResponse = Either<BadRequestError, { admin: Admin }>
 
+@Injectable()
 export class RegisterAdminUseCase {
   constructor(private adminsRepository: AdminsRepository, private hasher: Hasher) {}
 

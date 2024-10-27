@@ -47,8 +47,6 @@ describe("Update Recipient (e2e)", () => {
         zip: "updated-zip",
       })
 
-      console.log(response.body)
-
     expect(response.statusCode).toBe(204)
 
     const updatedRecipient = await prismaService.recipient.findUnique({
