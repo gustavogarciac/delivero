@@ -5,16 +5,26 @@ import { ConfirmRecipientPasswordResetController } from "./confirm-recipient-pas
 import { ConfirmRecipientPasswordResetUseCase } from "@/domain/logistics/application/use-cases/recipient/confirm-recipient-password-reset";
 import { DeleteRecipientController } from "./delete-recipient.controller";
 import { DeleteRecipientUseCase } from "@/domain/logistics/application/use-cases/recipient/delete-recipient";
+import { GetRecipientAwaitingPickupOrdersController } from "./get-recipient-awaiting-pickup-orders.controller";
+import { GetRecipientAwaitingPickupOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-awaiting-pickup-orders";
+import { APP_GUARD } from "@nestjs/core";
+import { JwtAuthGuard } from "@/infra/auth/jwt-auth-guard";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
   controllers: [
     ConfirmRecipientPasswordResetController,
-    DeleteRecipientController
+    DeleteRecipientController,
+    GetRecipientAwaitingPickupOrdersController
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    },
     ConfirmRecipientPasswordResetUseCase,
-    DeleteRecipientUseCase
+    DeleteRecipientUseCase,
+    GetRecipientAwaitingPickupOrdersUseCase
   ]
 })
 export class RecipientModule {}

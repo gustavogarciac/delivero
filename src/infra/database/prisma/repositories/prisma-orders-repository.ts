@@ -34,8 +34,18 @@ export class PrismaOrdersRepository implements OrdersRepository {
   setAsDelivered(orderId: string, delivererId: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  findMany(params: PaginationParams): Promise<{ items: Order[]; total?: number; }> {
-    throw new Error("Method not implemented.");
+  async findMany(params: PaginationParams): Promise<{ items: Order[]; total?: number; }> {
+    const { page, perPage, count } = params
+
+    const orders = await this.prisma.order.findMany({
+      take: perPage,
+      skip: (page - 1) * perPage
+    })
+
+    return {
+      items: orders.map(PrismaOrderMapper.toDomain),
+      total: count ? orders.length : undefined
+    }
   }
   async findManyNear(delivererGeo: Geolocalization, maxDistance: number): Promise<Order[]> {
     const { latitude: delivererLatitude, longitude: delivererLongitude } = delivererGeo;

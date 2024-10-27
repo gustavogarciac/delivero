@@ -1,9 +1,8 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, Param, Query, UnauthorizedException, UsePipes } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpCode, Param, Query, UnauthorizedException } from "@nestjs/common";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { ListOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/list-orders";
-import { PrismaOrderMapper } from "@/infra/database/prisma/mappers/prisma-order-mapper";
 import { OrderPresenter } from "../../presenters/order-presenter";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";

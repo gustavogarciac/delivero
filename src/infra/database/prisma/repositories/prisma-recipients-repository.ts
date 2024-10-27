@@ -5,6 +5,7 @@ import { Recipient } from "@/domain/logistics/enterprise/entities/recipient";
 import { PrismaService } from "../prisma.service";
 import { PrismaRecipientMapper } from "../mappers/prisma-recipient-mapper";
 import { Injectable } from "@nestjs/common";
+import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
 
 @Injectable()
 export class PrismaRecipientsRepository implements RecipientsRepository {
@@ -32,8 +33,25 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
 
     return PrismaRecipientMapper.toDomain(recipient)
   }
-  fetchOrders(params: PaginationParams, recipientId: string): Promise<{ items: Order[]; total?: number; }> {
-    throw new Error("Method not implemented.");
+  async fetchOrders(params: PaginationParams, recipientId: string): Promise<{ items: Order[]; total?: number; }> {
+    const { page, perPage, count } = params
+
+    const orders = await this.prisma.order.findMany({
+      where: {
+        recipientId,
+      },
+      take: perPage,
+      skip: (page - 1) * perPage,
+    })
+
+    return {
+      items: orders.map(PrismaOrderMapper.toDomain),
+      total: count ? await this.prisma.order.count({
+        where: {
+          recipientId
+        }
+      }) : undefined
+    }
   }
   async delete(recipient: Recipient): Promise<void> {
     await this.prisma.recipient.delete({
