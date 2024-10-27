@@ -29,7 +29,7 @@ describe("Update Deliverer (e2e)", () => {
     await app.init()
   })
 
-  test("[POST] /sessions/deliverers/reset-password", async () => {
+  test("[PUT] /deliverers/:delivererId", async () => {
     const deliverer = await delivererFactory.makePrismaDeliverer()
 
     const accessToken = jwt.sign({ sub: deliverer.id.toString() })

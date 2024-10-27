@@ -2,6 +2,7 @@ import { Either, left, right } from "@/core/either";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Recipient } from "@/domain/logistics/enterprise/entities/recipient";
 import { RecipientsRepository } from "../../repositories/recipients-repository";
+import { Injectable } from "@nestjs/common";
 
 interface UpdateRecipientUseCaseRequest {
   recipientId: string
@@ -17,6 +18,7 @@ interface UpdateRecipientUseCaseRequest {
 
 type UpdateRecipientUseCaseResponse = Either<BadRequestError, object>
 
+@Injectable()
 export class UpdateRecipientUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 

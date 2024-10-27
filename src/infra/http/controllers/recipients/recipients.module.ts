@@ -26,6 +26,8 @@ import { RegisterRecipientUseCase } from "@/domain/logistics/application/use-cas
 import { ResetRecipientPasswordController } from "./reset-recipient-password.controller";
 import { ResetRecipientPasswordUseCase } from "@/domain/logistics/application/use-cases/recipient/reset-recipient-password";
 import { MailerModule } from "@/infra/mailer/mailer.module";
+import { UpdateRecipientController } from "./update-recipient.controller";
+import { UpdateRecipientUseCase } from "@/domain/logistics/application/use-cases/recipient/update-recipient";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
@@ -40,7 +42,8 @@ import { MailerModule } from "@/infra/mailer/mailer.module";
     GetRecipientDetailsController,
     GetRecipientsController,
     RegisterRecipientController,
-    ResetRecipientPasswordController
+    ResetRecipientPasswordController,
+    UpdateRecipientController
   ],
   providers: [
     {
@@ -57,7 +60,8 @@ import { MailerModule } from "@/infra/mailer/mailer.module";
     GetRecipientDetailsUseCase,
     GetRecipientsUseCase,
     RegisterRecipientUseCase,
-    ResetRecipientPasswordUseCase
+    ResetRecipientPasswordUseCase,
+    UpdateRecipientUseCase
   ]
 })
 export class RecipientModule {}
