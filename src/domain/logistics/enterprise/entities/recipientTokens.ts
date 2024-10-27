@@ -1,6 +1,6 @@
 import { Entity } from "@/core/entities/entity";
 
-type RecipientTokenProps = {
+export type RecipientTokenProps = {
   recipientId: string
   token: string
   expiration: Date

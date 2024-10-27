@@ -4,6 +4,7 @@ import { Either, left, right } from "@/core/either"
 import { Hasher } from "../../cryptography/hasher"
 import { RecipientTokenRepository } from "../../repositories/recipient-tokens-repository"
 import { UnauthorizedError } from "@/core/errors/unauthorized-error"
+import { Injectable } from "@nestjs/common"
 
 interface ConfirmRecipientPasswordResetUseCaseRequest {
   token: string
@@ -13,6 +14,7 @@ interface ConfirmRecipientPasswordResetUseCaseRequest {
 
 type ConfirmRecipientPasswordResetUseCaseResponse = Either<BadRequestError | UnauthorizedError, object>
 
+@Injectable()
 export class ConfirmRecipientPasswordResetUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository, 

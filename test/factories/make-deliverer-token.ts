@@ -1,14 +1,8 @@
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
-import { DelivererProps } from "@/domain/logistics/enterprise/entities/deliverer";
-import { UserProps } from "@/domain/logistics/enterprise/entities/user";
-import { Vehicle } from "@/domain/logistics/enterprise/entities/vehicle";
 import { faker } from "@faker-js/faker";
-import { makeVehicle } from "./make-vehicle";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@/infra/database/prisma/prisma.service";
-import { PrismaDelivererMapper } from "@/infra/database/prisma/mappers/prisma-deliverer-mapper";
 import { DelivererToken, DelivererTokenProps } from "@/domain/logistics/enterprise/entities/delivererTokens";
-import { makeDeliverer } from "./make-deliverer";
 import { PrismaDelivererTokenMapper } from "@/infra/database/prisma/mappers/prisma-deliverer-token-mapper";
 
 export function makeDelivererToken(

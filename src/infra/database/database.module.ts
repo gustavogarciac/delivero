@@ -6,6 +6,10 @@ import { DelivererTokenRepository } from '@/domain/logistics/application/reposit
 import { PrismaDelivererTokensRepository } from './prisma/repositories/prisma-deliverer-tokens-repository';
 import { PrismaOrdersRepository } from './prisma/repositories/prisma-orders-repository';
 import { OrdersRepository } from '@/domain/logistics/application/repositories/orders-repository';
+import { RecipientsRepository } from '@/domain/logistics/application/repositories/recipients-repository';
+import { PrismaRecipientsRepository } from './prisma/repositories/prisma-recipients-repository';
+import { RecipientTokenRepository } from '@/domain/logistics/application/repositories/recipient-tokens-repository';
+import { PrismaRecipientTokensRepository } from './prisma/repositories/prisma-recipient-tokens-repository';
 
 @Module({
   providers: [
@@ -21,8 +25,23 @@ import { OrdersRepository } from '@/domain/logistics/application/repositories/or
     {
       provide: OrdersRepository,
       useClass: PrismaOrdersRepository
+    },
+    {
+      provide: RecipientsRepository,
+      useClass: PrismaRecipientsRepository
+    },
+    {
+      provide: RecipientTokenRepository,
+      useClass: PrismaRecipientTokensRepository
     }
   ],
-  exports: [PrismaService, DeliverersRepository, DelivererTokenRepository, OrdersRepository],
+  exports: [
+    PrismaService, 
+    DeliverersRepository, 
+    DelivererTokenRepository, 
+    OrdersRepository, 
+    RecipientsRepository,
+    RecipientTokenRepository
+  ],
 })
 export class DatabaseModule {}

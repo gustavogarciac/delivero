@@ -3,10 +3,7 @@ import { Admin, AdminProps } from "@/domain/logistics/enterprise/entities/admin"
 import { Role } from "@/domain/logistics/enterprise/entities/role";
 import { Status, UserProps } from "@/domain/logistics/enterprise/entities/user";
 import { Cpf } from "@/domain/logistics/enterprise/entities/value-objects/cpf";
-import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization";
-import { Vehicle } from "@/domain/logistics/enterprise/entities/vehicle";
 import { faker } from "@faker-js/faker";
-import { makeVehicle } from "./make-vehicle";
 import { Permissions } from "@/domain/logistics/enterprise/entities/permissions/admin";
 
 export function makeAdmin(

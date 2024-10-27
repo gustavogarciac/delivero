@@ -25,8 +25,10 @@ export class PrismaRecipientMapper {
       lastOrderAt: prismaRecipient.lastOrderAt,
       updatedAt: prismaRecipient.updatedAt,
       password: prismaRecipient.password,
-      orders: prismaRecipient.orders.map(PrismaOrderMapper.toDomain)
-    })
+      orders: prismaRecipient.orders.map(PrismaOrderMapper.toDomain),
+    },
+      new UniqueEntityId(prismaRecipient.id)
+    )
 
     return recipient
   }

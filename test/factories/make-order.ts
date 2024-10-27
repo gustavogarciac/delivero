@@ -1,13 +1,10 @@
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Order, OrderProps, OrderStatus } from "@/domain/logistics/enterprise/entities/order";
-import { makeDeliverer } from "./make-deliverer";
 import { faker } from "@faker-js/faker";
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization";
 import { PrismaService } from "@/infra/database/prisma/prisma.service";
-import { PrismaDelivererMapper } from "@/infra/database/prisma/mappers/prisma-deliverer-mapper";
 import { Injectable } from "@nestjs/common";
 import { PrismaOrderMapper } from "@/infra/database/prisma/mappers/prisma-order-mapper";
-import { RecipientFactory } from "./make-recipient";
 
 function randomStatus(): OrderStatus {
   const status = Object.values(OrderStatus) as OrderStatus[];

@@ -89,6 +89,17 @@ model Recipient {
   @@map("recipients")
 }
 
+model RecipientToken {
+  id          String   @id @default(uuid())
+  recipientId String   @map("recipient_id")
+  token       String
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("recipient_tokens")
+}
+
 model Vehicle {
   id       String      @id @default(uuid())
   plate    String
