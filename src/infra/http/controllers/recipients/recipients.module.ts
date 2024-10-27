@@ -9,13 +9,25 @@ import { GetRecipientAwaitingPickupOrdersController } from "./get-recipient-awai
 import { GetRecipientAwaitingPickupOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-awaiting-pickup-orders";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "@/infra/auth/jwt-auth-guard";
+import { GetRecipientDeliveredOrdersController } from "./get-recipient-delivered-orders.controller";
+import { GetRecipientDeliveredOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-delivered-orders";
+import { GetRecipientInTransitOrdersController } from "./get-recipient-in-transit-orders.controller";
+import { GetRecipientInTransitOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-in-transit-orders";
+import { GetRecipientReturnedOrdersController } from "./get-recipient-returned-orders.controller";
+import { GetRecipientReturnedOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-returned-orders";
+import { GetRecipientPreparingOrdersController } from "./get-recipient-preparing-orders.controller";
+import { GetRecipientPreparingOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-preparing-orders";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
   controllers: [
     ConfirmRecipientPasswordResetController,
     DeleteRecipientController,
-    GetRecipientAwaitingPickupOrdersController
+    GetRecipientAwaitingPickupOrdersController,
+    GetRecipientDeliveredOrdersController,
+    GetRecipientInTransitOrdersController,
+    GetRecipientReturnedOrdersController,
+    GetRecipientPreparingOrdersController
   ],
   providers: [
     {
@@ -24,7 +36,11 @@ import { JwtAuthGuard } from "@/infra/auth/jwt-auth-guard";
     },
     ConfirmRecipientPasswordResetUseCase,
     DeleteRecipientUseCase,
-    GetRecipientAwaitingPickupOrdersUseCase
+    GetRecipientAwaitingPickupOrdersUseCase,
+    GetRecipientDeliveredOrdersUseCase,
+    GetRecipientInTransitOrdersUseCase,
+    GetRecipientReturnedOrdersUseCase,
+    GetRecipientPreparingOrdersUseCase
   ]
 })
 export class RecipientModule {}

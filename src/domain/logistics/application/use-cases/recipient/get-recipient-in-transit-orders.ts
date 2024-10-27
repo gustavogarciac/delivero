@@ -4,6 +4,7 @@ import { Recipient } from "@/domain/logistics/enterprise/entities/recipient";
 import { RecipientsRepository } from "../../repositories/recipients-repository";
 import { PaginationParams } from "@/core/repositories/pagination";
 import { Order, OrderStatus } from "@/domain/logistics/enterprise/entities/order";
+import { Injectable } from "@nestjs/common";
 
 type GetRecipientInTransitOrdersUseCaseRequest = {
   page: number
@@ -15,6 +16,7 @@ type GetRecipientInTransitOrdersUseCaseRequest = {
 
 type GetRecipientInTransitOrdersUseCaseResponse = Either<BadRequestError, { items: Order[], total?: number }>
 
+@Injectable()
 export class GetRecipientInTransitOrdersUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 

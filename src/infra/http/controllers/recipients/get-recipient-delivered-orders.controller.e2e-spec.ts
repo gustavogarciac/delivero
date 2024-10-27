@@ -4,14 +4,12 @@ import { Test } from "@nestjs/testing"
 import { AppModule } from "@/infra/app.module"
 import { DatabaseModule } from "@/infra/database/database.module"
 import request from "supertest"
-import { PrismaService } from "@/infra/database/prisma/prisma.service"
 import { JwtService } from "@nestjs/jwt"
 import { OrderFactory } from "test/factories/make-order"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 
-describe("Get Recipient Awaiting Pickup Orders (e2e)", () => {
+describe("Get Recipient Delivered Orders (e2e)", () => {
   let app: INestApplication
-  let prismaService: PrismaService
   let recipientFactory: RecipientFactory
   let orderFactory: OrderFactory
   let jwt: JwtService
@@ -24,7 +22,6 @@ describe("Get Recipient Awaiting Pickup Orders (e2e)", () => {
 
     app = moduleRef.createNestApplication()
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService)
     recipientFactory = moduleRef.get<RecipientFactory>(RecipientFactory)
     orderFactory = moduleRef.get<OrderFactory>(OrderFactory)
 
@@ -33,24 +30,24 @@ describe("Get Recipient Awaiting Pickup Orders (e2e)", () => {
     await app.init()
   })
 
-  test("[GET] /recipients/:recipientId/orders/awaiting-pickup", async () => {
+  test("[GET] /recipients/:recipientId/orders/delivered", async () => {
     const recipient = await recipientFactory.makePrismaRecipient()
     const accessToken = jwt.sign({ sub: recipient.id.toString() })
 
     for (let i = 0; i < 9; i++) {
       await orderFactory.makePrismaOrder({
         recipientId: recipient.id,
-        status: OrderStatus.AWAITING_PICKUP
+        status: OrderStatus.DELIVERED
       })
     }
 
     await orderFactory.makePrismaOrder({
       recipientId: recipient.id,
-      status: OrderStatus.DELIVERED
+      status: OrderStatus.AWAITING_PICKUP
     })
 
     const response = await request(app.getHttpServer())
-      .get(`/recipients/${recipient.id.toString()}/orders/awaiting-pickup`)
+      .get(`/recipients/${recipient.id.toString()}/orders/delivered`)
       .set("Authorization", `Bearer ${accessToken}`)
       .query({
         page: 1,

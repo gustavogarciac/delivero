@@ -2,6 +2,7 @@ import { Either, left, right } from "@/core/either";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { RecipientsRepository } from "../../repositories/recipients-repository";
 import { Order, OrderStatus } from "@/domain/logistics/enterprise/entities/order";
+import { Injectable } from "@nestjs/common";
 
 type GetRecipientPreparingOrdersUseCaseRequest = {
   page: number
@@ -13,6 +14,7 @@ type GetRecipientPreparingOrdersUseCaseRequest = {
 
 type GetRecipientPreparingOrdersUseCaseResponse = Either<BadRequestError, { items: Order[], total?: number }>
 
+@Injectable()
 export class GetRecipientPreparingOrdersUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 
