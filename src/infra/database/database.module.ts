@@ -12,6 +12,8 @@ import { RecipientTokenRepository } from '@/domain/logistics/application/reposit
 import { PrismaRecipientTokensRepository } from './prisma/repositories/prisma-recipient-tokens-repository';
 import { AdminsRepository } from '@/domain/logistics/application/repositories/admins-repository';
 import { PrismaAdminsRepository } from './prisma/repositories/prisma-admins-repository';
+import { OrderAttachmentsRepository } from '@/domain/logistics/application/repositories/order-attachments-repository';
+import { PrismaOrderAttachmentsRepository } from './prisma/repositories/prisma-order-attachments-repository';
 
 @Module({
   providers: [
@@ -39,6 +41,10 @@ import { PrismaAdminsRepository } from './prisma/repositories/prisma-admins-repo
     {
       provide: AdminsRepository,
       useClass: PrismaAdminsRepository
+    },
+    {
+      provide: OrderAttachmentsRepository,
+      useClass: PrismaOrderAttachmentsRepository
     }
   ],
   exports: [
@@ -48,7 +54,8 @@ import { PrismaAdminsRepository } from './prisma/repositories/prisma-admins-repo
     OrdersRepository, 
     RecipientsRepository,
     RecipientTokenRepository,
-    AdminsRepository
+    AdminsRepository,
+    OrderAttachmentsRepository
   ],
 })
 export class DatabaseModule {}

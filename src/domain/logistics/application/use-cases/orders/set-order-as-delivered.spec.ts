@@ -38,7 +38,6 @@ describe("Set Order as Delivered Use Case", async () => {
 
     expect(result.isRight()).toBeTruthy()
 
-
     expect(ordersRepository.items[0].status).toBe(OrderStatus.DELIVERED)
 
     expect(deliverer.deliveriesCount).toBe(1)

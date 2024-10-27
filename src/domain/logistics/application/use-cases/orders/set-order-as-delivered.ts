@@ -5,6 +5,7 @@ import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { OrderAttachmentsRepository } from "../../repositories/order-attachments-repository"
+import { Injectable } from "@nestjs/common"
 
 interface SetOrderAsDeliveredUseCaseRequest {
   orderId: string
@@ -13,6 +14,7 @@ interface SetOrderAsDeliveredUseCaseRequest {
 
 type SetOrderAsDeliveredUseCaseResponse = Either<ResourceNotFoundError | BadRequestError, object>
 
+@Injectable()
 export class SetOrderAsDeliveredUseCase {
   constructor(
     private ordersRepository: OrdersRepository, 
@@ -47,8 +49,11 @@ export class SetOrderAsDeliveredUseCase {
       return left(new BadRequestError("You must attach a picture to confirm the order delivery"))
     }
     
-    await this.ordersRepository.setAsDelivered(orderId, delivererId)
-    await this.deliverersRepository.incrementDeliveriesCount(delivererId)
+    order.setAsDelivered()
+    deliverer.deliverOrder(order)
+
+    await this.ordersRepository.save(order)
+    await this.deliverersRepository.save(deliverer)
 
     return right({})
   }

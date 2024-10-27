@@ -5,6 +5,9 @@ import { faker } from "@faker-js/faker";
 import { makeOrder } from "./make-order";
 import { OrderAttachment, OrderAttachmentProps } from "@/domain/logistics/enterprise/entities/order-attachment";
 import { AttachmentProps, AttachmentType } from "@/domain/logistics/enterprise/entities/attachment";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
+import { PrismaOrderAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-order-attachment-mapper";
 
 function randomStatus(): OrderStatus {
   const status = Object.values(OrderStatus) as OrderStatus[];
@@ -40,4 +43,19 @@ export function makeOrderAttachment(
   }, id)
 
   return orderAttachment
+}
+
+@Injectable()
+export class OrderAttachmentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaOrderAttachment(orderAttachmentProps: Partial<OrderAttachmentProps> = {}, attachmentProps: Partial<AttachmentProps> = {}) {
+    const orderAttachment = makeOrderAttachment(orderAttachmentProps, attachmentProps)
+
+    await this.prisma.orderAttachment.create({
+      data: PrismaOrderAttachmentMapper.toPersistence(orderAttachment)
+    })
+
+    return orderAttachment
+  }
 }

@@ -6,7 +6,7 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Status, User, UserProps } from "./user";
 import { Vehicle } from "./vehicle";
 import { Geolocalization } from "./value-objects/geolocalization";
-import { Order } from "./order";
+import { Order, OrderStatus } from "./order";
 export interface DelivererProps {
   vehicle?: Vehicle | null
   isAvailable: boolean
@@ -64,6 +64,16 @@ export class Deliverer extends User {
   attendOrder(order: Order) {
     this.delivererProps.orders?.push(order)
     this.touch()
+  }
+
+  deliverOrder(order: Order) {
+    const delivererOrder = this.delivererProps.orders?.find((delivererOrder) => delivererOrder.id.equals(order.id))
+
+    if (delivererOrder) {
+      delivererOrder.status = OrderStatus.DELIVERED
+    }
+
+    this.incrementDeliveriesCount()
   }
 
   incrementDeliveriesCount() {

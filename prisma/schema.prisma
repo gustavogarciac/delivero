@@ -50,8 +50,9 @@ model Deliverer {
   vehicle         Vehicle[]
   orders          Order[]
 
-  registeredAt DateTime @default(now()) @map("registered_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  registeredAt     DateTime          @default(now()) @map("registered_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  orderAttachments OrderAttachment[]
 
   @@map("deliverers")
 }
@@ -152,6 +153,25 @@ model Order {
   delivererId String?    @map("deliverer_id")
   deliverer   Deliverer? @relation(fields: [delivererId], references: [id])
 
-  recipientId String    @map("recipient_id")
-  recipient   Recipient @relation(fields: [recipientId], references: [id])
+  recipientId      String            @map("recipient_id")
+  recipient        Recipient         @relation(fields: [recipientId], references: [id])
+  orderAttachments OrderAttachment[]
+}
+
+model OrderAttachment {
+  id    String @id @default(uuid())
+  url   String
+  title String
+  type  String
+
+  orderId String @map("order_id")
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  delivererId String     @map("deliverer_id")
+  deliverer   Deliverer? @relation(fields: [delivererId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("order_attachments")
 }

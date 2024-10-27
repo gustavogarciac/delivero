@@ -34,9 +34,6 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
     return PrismaOrderMapper.toDomain(order)
   }
-  setAsDelivered(orderId: string, delivererId: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
   async findMany(params: PaginationParams): Promise<{ items: Order[]; total?: number; }> {
     const { page, perPage, count } = params
 
