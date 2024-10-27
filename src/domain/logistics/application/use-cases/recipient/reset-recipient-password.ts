@@ -4,6 +4,7 @@ import { Mailer } from "../../mailer/mailer"
 import { RecipientsRepository } from "../../repositories/recipients-repository"
 import { Otp } from "@/domain/logistics/enterprise/entities/value-objects/otp"
 import { RecipientTokenRepository } from "../../repositories/recipient-tokens-repository"
+import { Injectable } from "@nestjs/common"
 
 interface ResetRecipientPasswordUseCaseRequest {
   email: string
@@ -11,6 +12,7 @@ interface ResetRecipientPasswordUseCaseRequest {
 
 type ResetRecipientPasswordUseCaseResponse = Either<BadRequestError, { otp: string }>
 
+@Injectable()
 export class ResetRecipientPasswordUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository, 

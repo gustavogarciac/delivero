@@ -8,8 +8,14 @@ import { Injectable } from "@nestjs/common";
 export class PrismaRecipientTokensRepository implements RecipientTokenRepository {
   constructor(private prisma: PrismaService) {}
 
-  save(recipientId: string, token: string, expiration: Date): Promise<void> {
-    throw new Error("Method not implemented.");
+  async save(recipientId: string, token: string, expiration: Date): Promise<void> {
+    await this.prisma.recipientToken.create({
+      data: {
+        recipientId,
+        token,
+        expiresAt: expiration
+      }
+    })
   }
   
   async findByRecipientIdAndToken(recipientId: string, token: string): Promise<RecipientToken | null> {
