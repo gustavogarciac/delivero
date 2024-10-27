@@ -2,19 +2,21 @@ import { Either, left, right } from "@/core/either"
 import { OrdersRepository } from "../../repositories/orders-repository"
 import { Order } from "../../../enterprise/entities/order"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
+import { Injectable } from "@nestjs/common"
 
-interface CreateOrderUseCaseRequest {
+interface GetOrderDetailsRequest {
   orderId: string
 }
 
-type CreateOrderUseCaseResponse = Either<ResourceNotFoundError, { order: Order }>
+type GetOrderDetailsResponse = Either<ResourceNotFoundError, { order: Order }>
 
-export class CreateOrderUseCase {
+@Injectable()
+export class GetOrderDetailsUseCase {
   constructor(private ordersRepository: OrdersRepository) {}
 
   async execute({
     orderId
-  } : CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
+  } : GetOrderDetailsRequest): Promise<GetOrderDetailsResponse> {
     const order = await this.ordersRepository.findById(orderId)
 
     if(!order) return left(new ResourceNotFoundError())

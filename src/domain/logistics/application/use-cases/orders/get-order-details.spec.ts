@@ -1,27 +1,23 @@
-import { CreateOrderUseCase } from "./create-order"
 import { InMemoryOrdersRepository } from "test/repositories/in-memory-orders-repository"
 import { makeOrder } from "test/factories/make-order"
-import { UniqueEntityId } from "@/core/entities/unique-entity-id"
+import { GetOrderDetailsUseCase } from "./get-order-details"
 
 let ordersRepository: InMemoryOrdersRepository
-let sut: CreateOrderUseCase
+let sut: GetOrderDetailsUseCase
 
 describe("Get Order Details Use Case", async () => {
   beforeEach(async () => {
     ordersRepository = new InMemoryOrdersRepository()
-    sut = new CreateOrderUseCase(ordersRepository)
+    sut = new GetOrderDetailsUseCase(ordersRepository)
   })
 
   it("should get an order details", async () => {
     const order = makeOrder()
 
+    await ordersRepository.items.push(order)
+
     const result = await sut.execute({
-      delivererId: new UniqueEntityId('01923ae4-cae0-7ddf-a8f4-6b97396894c9'),
-      deliveryAddress: order.deliveryAddress,
-      geo: order.geo,
-      recipientId: order.recipientId,
-      adminId: order.adminId,
-      notes: order.notes,
+      orderId: order.id.toString()
     })
 
     expect(result.isRight()).toBeTruthy()
