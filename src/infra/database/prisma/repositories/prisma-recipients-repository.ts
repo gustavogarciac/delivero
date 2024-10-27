@@ -11,8 +11,43 @@ import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
 export class PrismaRecipientsRepository implements RecipientsRepository {
   constructor(private prisma: PrismaService) {}
 
-  findMany(params: PaginationParams): Promise<{ items: Recipient[]; total?: number; }> {
-    throw new Error("Method not implemented.");
+  async findMany(params: PaginationParams): Promise<{ items: Recipient[]; total?: number; }> {
+    const { page, perPage, count, query } = params
+
+    let recipients: Recipient[] = []
+
+    if(query) {
+      const prismaRecipients = await this.prisma.recipient.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: "insensitive"
+          }
+        },
+        take: perPage,
+        skip: (page - 1) * perPage,
+        include: {
+          orders: true
+        }
+      })
+
+      recipients = prismaRecipients.map(PrismaRecipientMapper.toDomain)
+    } else {
+      const prismaRecipients = await this.prisma.recipient.findMany({
+        take: perPage,
+        skip: (page - 1) * perPage,
+        include: {
+          orders: true
+        }
+      })
+
+      recipients = prismaRecipients.map(PrismaRecipientMapper.toDomain)
+    }
+
+    return {
+      items: recipients,
+      total: count ? recipients.length : undefined
+    }
   }
   findByEmail(email: string): Promise<Recipient | null> {
     throw new Error("Method not implemented.");

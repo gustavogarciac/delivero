@@ -9,9 +9,7 @@ type PrismaRecipientWithRelations = PrismaRecipient & {
 }
 
 export class PrismaRecipientMapper {
-  static toDomain(prismaRecipient: PrismaRecipientWithRelations): Recipient | null {
-    if(!prismaRecipient) return null
-
+  static toDomain(prismaRecipient: PrismaRecipientWithRelations): Recipient {
     const recipient = Recipient.create({
       address: prismaRecipient.address,
       city: prismaRecipient.city,

@@ -19,6 +19,8 @@ import { GetRecipientPreparingOrdersController } from "./get-recipient-preparing
 import { GetRecipientPreparingOrdersUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-preparing-orders";
 import { GetRecipientDetailsController } from "./get-recipient-details.controller";
 import { GetRecipientDetailsUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-details";
+import { GetRecipientsController } from "./get-recipients.controller";
+import { GetRecipientsUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipients";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -30,7 +32,8 @@ import { GetRecipientDetailsUseCase } from "@/domain/logistics/application/use-c
     GetRecipientInTransitOrdersController,
     GetRecipientReturnedOrdersController,
     GetRecipientPreparingOrdersController,
-    GetRecipientDetailsController
+    GetRecipientDetailsController,
+    GetRecipientsController
   ],
   providers: [
     {
@@ -44,7 +47,8 @@ import { GetRecipientDetailsUseCase } from "@/domain/logistics/application/use-c
     GetRecipientInTransitOrdersUseCase,
     GetRecipientReturnedOrdersUseCase,
     GetRecipientPreparingOrdersUseCase,
-    GetRecipientDetailsUseCase
+    GetRecipientDetailsUseCase,
+    GetRecipientsUseCase
   ]
 })
 export class RecipientModule {}
