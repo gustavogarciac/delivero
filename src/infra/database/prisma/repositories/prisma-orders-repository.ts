@@ -4,18 +4,24 @@ import { Order } from "@/domain/logistics/enterprise/entities/order";
 import { Geolocalization } from "@/domain/logistics/enterprise/entities/value-objects/geolocalization";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
-import { calculateDistanceInQuilometers } from "@/core/haversine";
 import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
   constructor(private prisma: PrismaService) {}
 
-  create(order: Order): Promise<void> {
-    throw new Error("Method not implemented.");
+  async create(order: Order): Promise<void> {
+    await this.prisma.order.create({
+      data: PrismaOrderMapper.toPersistence(order),
+    })
   }
-  save(order: Order): Promise<void> {
-    throw new Error("Method not implemented.");
+  async save(order: Order): Promise<void> {
+    await this.prisma.order.update({
+      where: {
+        id: order.id.toString()
+      },
+      data: PrismaOrderMapper.toPersistence(order)
+    })
   }
   async findById(id: string): Promise<Order | null> {
     const order = await this.prisma.order.findUnique({
@@ -27,9 +33,6 @@ export class PrismaOrdersRepository implements OrdersRepository {
     if(!order) return null
 
     return PrismaOrderMapper.toDomain(order)
-  }
-  setAsPickedUp(orderId: string, delivererId: string): Promise<void> {
-    throw new Error("Method not implemented.");
   }
   setAsDelivered(orderId: string, delivererId: string): Promise<void> {
     throw new Error("Method not implemented.");

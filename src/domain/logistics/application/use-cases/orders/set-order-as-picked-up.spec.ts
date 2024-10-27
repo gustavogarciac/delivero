@@ -1,15 +1,11 @@
-import { CreateOrderUseCase } from "./create-order"
 import { InMemoryOrdersRepository } from "test/repositories/in-memory-orders-repository"
 import { makeOrder } from "test/factories/make-order"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 import { SetOrderAsPickedUpUseCase } from "./set-order-as-picked-up"
-import { AdminsRepository } from "../../repositories/admins-repository"
-import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { InMemoryDelivererRepository } from "test/repositories/in-memory-deliverer-repository"
 import { InMemoryAdminsRepository } from "test/repositories/in-memory-admins-repository"
 import { makeAdmin } from "test/factories/make-admin"
 import { makeDeliverer } from "test/factories/make-deliverer"
-import { Status } from "@/domain/logistics/enterprise/entities/user"
 import { UniqueEntityId } from "@/core/entities/unique-entity-id"
 
 let ordersRepository: InMemoryOrdersRepository

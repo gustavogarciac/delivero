@@ -79,16 +79,6 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return { items: paginatedOrders, total: this.items.length }
   }
 
-  async setAsPickedUp(id: string, delivererId: string): Promise<void> {
-    const order = this.items.find((order) => order.id.toString() === id)
-
-    if (!order) return
-
-    order.setAsPickedUp(delivererId)
-
-    await this.save(order)
-  }
-
   async setAsDelivered(orderId: string, delivererId: string): Promise<void> {
     const order = this.items.find((order) => order.id.toString() === orderId)
 

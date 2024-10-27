@@ -26,7 +26,7 @@ export class PrismaOrderMapper {
     return order
   }
 
-  static toPersistence(order: Order): Prisma.OrderCreateInput {      
+  static toPersistence(order: Order): Prisma.OrderCreateInput {    
     return {
       id: order.id.toString(),
       createdAt: order.createdAt,

@@ -38,7 +38,10 @@ export class SetOrderAsPickedUpUseCase {
     if(!deliverer) return left(new ResourceNotFoundError())
     
     await this.adminsRepository.attendOrderToDeliverer(order, delivererId)
-    await this.ordersRepository.setAsPickedUp(orderId, delivererId)
+
+    order.setAsPickedUp(delivererId)
+
+    await this.ordersRepository.save(order)
 
     return right({})
   }

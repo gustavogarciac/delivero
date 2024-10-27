@@ -4,11 +4,12 @@ import { OrdersRepository } from "../../repositories/orders-repository"
 import { Order, OrderStatus } from "../../../enterprise/entities/order"
 import { UniqueEntityId } from "@/core/entities/unique-entity-id"
 import { Geolocalization } from "../../../enterprise/entities/value-objects/geolocalization"
+import { Injectable } from "@nestjs/common"
 
 interface CreateOrderUseCaseRequest {
-  delivererId: UniqueEntityId,
-  recipientId: UniqueEntityId,
-  adminId?: UniqueEntityId | null,
+  delivererId?: string,
+  recipientId: string,
+  adminId?: string,
   deliveryAddress: string,
   geo: Geolocalization,
   notes?: string | null,
@@ -16,6 +17,7 @@ interface CreateOrderUseCaseRequest {
 
 type CreateOrderUseCaseResponse = Either<BadRequestError, { order: Order }>
 
+@Injectable()
 export class CreateOrderUseCase {
   constructor(private ordersRepository: OrdersRepository) {}
 
@@ -28,9 +30,9 @@ export class CreateOrderUseCase {
     notes
   } : CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
     const order = Order.create({
-      delivererId,
-      recipientId,
-      adminId,
+      delivererId: delivererId ? new UniqueEntityId(delivererId) : null,
+      recipientId: new UniqueEntityId(recipientId),
+      adminId: new UniqueEntityId(adminId),
       status: OrderStatus.PREPARING,
       deliveryAddress,
       geo,
