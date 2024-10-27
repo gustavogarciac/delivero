@@ -6,18 +6,22 @@ import { RegisterAdminUseCase } from "@/domain/logistics/application/use-cases/a
 import { DatabaseModule } from "@/infra/database/database.module";
 import { CryptographyModule } from "@/infra/cryptography/cryptography.module";
 import { MailerModule } from "@/infra/mailer/mailer.module";
+import { SetUserAsActiveController } from "./set-user-as-active.controller";
+import { SetUserAsActiveUseCase } from "@/domain/logistics/application/use-cases/admin/set-user-as-active";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
   controllers: [
-    RegisterAdminController
+    RegisterAdminController,
+    SetUserAsActiveController
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard
     },
-    RegisterAdminUseCase
+    RegisterAdminUseCase,
+    SetUserAsActiveUseCase
   ]
 })
 export class AdminsModule {}

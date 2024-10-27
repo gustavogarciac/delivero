@@ -2,6 +2,7 @@ import { Either, left, right } from "@/core/either"
 import { AdminsRepository } from "../../repositories/admins-repository"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
+import { Injectable } from "@nestjs/common"
 
 interface SetUserAsActiveUseCaseRequest {
   delivererId: string
@@ -10,6 +11,7 @@ interface SetUserAsActiveUseCaseRequest {
 
 type SetUserAsActiveUseCaseResponse = Either<ResourceNotFoundError, object>
 
+@Injectable()
 export class SetUserAsActiveUseCase {
   constructor(private adminsRepository: AdminsRepository, private deliverersRepository: DeliverersRepository) {}
 
