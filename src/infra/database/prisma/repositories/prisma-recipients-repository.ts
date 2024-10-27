@@ -49,8 +49,18 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
       total: count ? recipients.length : undefined
     }
   }
-  findByEmail(email: string): Promise<Recipient | null> {
-    throw new Error("Method not implemented.");
+  async findByEmail(email: string): Promise<Recipient | null> {
+    const recipient = await this.prisma.recipient.findFirst({
+      where: {
+        email
+      },
+    })
+
+    if(!recipient) {
+      return null
+    }
+
+    return PrismaRecipientMapper.toDomain(recipient)
   }
   async findById(id: string): Promise<Recipient | null> {
     const recipient = await this.prisma.recipient.findUnique({
@@ -95,8 +105,20 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
       }
     })
   }
-  create(recipient: Recipient): Promise<void> {
-    throw new Error("Method not implemented.");
+  async create(recipient: Recipient): Promise<void> {
+    await this.prisma.recipient.create({
+      data: {
+        address: recipient.address,
+        city: recipient.city,
+        country: recipient.country,
+        email: recipient.email,
+        name: recipient.name,
+        password: recipient.password,
+        phone: recipient.phone,
+        state: recipient.state,
+        zip: recipient.zip
+      }
+    })
   }
   async save(recipient: Recipient): Promise<void> {
     await this.prisma.recipient.update({

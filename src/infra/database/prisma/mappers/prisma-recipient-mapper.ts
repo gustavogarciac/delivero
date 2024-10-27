@@ -5,7 +5,7 @@ import { Order, Recipient as PrismaRecipient, Role } from "@prisma/client";
 import { PrismaOrderMapper } from "./prisma-order-mapper";
 
 type PrismaRecipientWithRelations = PrismaRecipient & {
-  orders: Order[]
+  orders?: Order[]
 }
 
 export class PrismaRecipientMapper {
@@ -23,7 +23,7 @@ export class PrismaRecipientMapper {
       lastOrderAt: prismaRecipient.lastOrderAt,
       updatedAt: prismaRecipient.updatedAt,
       password: prismaRecipient.password,
-      orders: prismaRecipient.orders.map(PrismaOrderMapper.toDomain),
+      orders: prismaRecipient.orders ? prismaRecipient.orders.map(PrismaOrderMapper.toDomain) : [],
     },
       new UniqueEntityId(prismaRecipient.id)
     )

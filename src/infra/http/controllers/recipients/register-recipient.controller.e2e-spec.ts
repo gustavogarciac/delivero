@@ -8,7 +8,7 @@ import { JwtService } from "@nestjs/jwt"
 import { OrderFactory } from "test/factories/make-order"
 import { OrderStatus } from "@/domain/logistics/enterprise/entities/order"
 
-describe("Get Recipients (e2e)", () => {
+describe("Register Recipient (e2e)", () => {
   let app: INestApplication
   let recipientFactory: RecipientFactory
   let jwt: JwtService
@@ -28,27 +28,24 @@ describe("Get Recipients (e2e)", () => {
     await app.init()
   })
 
-  test("[GET] /recipients", async () => {
-    const recipient = await recipientFactory.makePrismaRecipient()
-    const accessToken = jwt.sign({ sub: recipient.id.toString() })
-
-    for(let i = 1; i < 10; i++) {
-      await recipientFactory.makePrismaRecipient()
-    }
-
+  test("[POST] /recipients", async () => {
     const response = await request(app.getHttpServer())
-      .get(`/recipients`)
-      .set("Authorization", `Bearer ${accessToken}`)
-      .query({
-        page: 1,
-        perPage: 10,
-        count: true
+      .post(`/recipients`)
+      .send({
+        address: "Rua dos Bobos, 0",
+        city: "São Paulo",
+        country: "Brasil",
+        email: "john@email.com",
+        name: "John Doe",
+        password: "123456789",
+        phone: "19521312323",
+        state: "São Paulo",
+        zip: "12345678"
       })
 
-    expect(response.statusCode).toBe(200)
-    expect(response.body).toHaveProperty("recipients")
-    expect(response.body).toHaveProperty("total")
-    expect(response.body.recipients).toHaveLength(10)
-    expect(response.body.total).toBe(10)
+    expect(response.statusCode).toBe(201)
+    expect(response.body).toEqual({
+      recipientId: expect.any(String)
+    })
   })
 })

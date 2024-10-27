@@ -21,6 +21,8 @@ import { GetRecipientDetailsController } from "./get-recipient-details.controlle
 import { GetRecipientDetailsUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipient-details";
 import { GetRecipientsController } from "./get-recipients.controller";
 import { GetRecipientsUseCase } from "@/domain/logistics/application/use-cases/recipient/get-recipients";
+import { RegisterRecipientController } from "./register-recipient.controller";
+import { RegisterRecipientUseCase } from "@/domain/logistics/application/use-cases/recipient/register-recipient";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -33,7 +35,8 @@ import { GetRecipientsUseCase } from "@/domain/logistics/application/use-cases/r
     GetRecipientReturnedOrdersController,
     GetRecipientPreparingOrdersController,
     GetRecipientDetailsController,
-    GetRecipientsController
+    GetRecipientsController,
+    RegisterRecipientController
   ],
   providers: [
     {
@@ -48,7 +51,8 @@ import { GetRecipientsUseCase } from "@/domain/logistics/application/use-cases/r
     GetRecipientReturnedOrdersUseCase,
     GetRecipientPreparingOrdersUseCase,
     GetRecipientDetailsUseCase,
-    GetRecipientsUseCase
+    GetRecipientsUseCase,
+    RegisterRecipientUseCase
   ]
 })
 export class RecipientModule {}
