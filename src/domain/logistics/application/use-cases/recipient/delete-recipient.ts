@@ -1,6 +1,7 @@
 import { Either, left, right } from "@/core/either";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { RecipientsRepository } from "../../repositories/recipients-repository";
+import { Injectable } from "@nestjs/common";
 
 interface DeleteRecipientUseCaseRequest {
   recipientId: string
@@ -8,6 +9,7 @@ interface DeleteRecipientUseCaseRequest {
 
 type DeleteRecipientUseCaseResponse = Either<BadRequestError, object>
 
+@Injectable()
 export class DeleteRecipientUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 

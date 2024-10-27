@@ -35,16 +35,17 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
   fetchOrders(params: PaginationParams, recipientId: string): Promise<{ items: Order[]; total?: number; }> {
     throw new Error("Method not implemented.");
   }
-  delete(recipient: Recipient): Promise<void> {
-    throw new Error("Method not implemented.");
+  async delete(recipient: Recipient): Promise<void> {
+    await this.prisma.recipient.delete({
+      where: {
+        id: recipient.id.toString()
+      }
+    })
   }
   create(recipient: Recipient): Promise<void> {
     throw new Error("Method not implemented.");
   }
   async save(recipient: Recipient): Promise<void> {
-    console.log(recipient)
-    console.log(await this.prisma.recipient.findMany())
-
     await this.prisma.recipient.update({
       where: {
         id: recipient.id.toString()
