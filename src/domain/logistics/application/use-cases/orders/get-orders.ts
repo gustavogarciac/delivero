@@ -2,6 +2,7 @@ import { Either, left, right } from "@/core/either"
 import { OrdersRepository } from "../../repositories/orders-repository"
 import { Order } from "../../../enterprise/entities/order"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
+import { Injectable } from "@nestjs/common"
 
 interface GetOrdersUseCaseRequest {
   page: number
@@ -12,6 +13,7 @@ interface GetOrdersUseCaseRequest {
 
 type GetOrdersUseCaseResponse = Either<ResourceNotFoundError, { items: Order[], total?: number }>
 
+@Injectable()
 export class GetOrdersUseCase {
   constructor(private ordersRepository: OrdersRepository) {}
 

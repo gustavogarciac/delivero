@@ -8,12 +8,15 @@ import { CreateOrderController } from "./create-order.controller";
 import { CreateOrderUseCase } from "@/domain/logistics/application/use-cases/orders/create-order";
 import { GetOrderDetailsUseCase } from "@/domain/logistics/application/use-cases/orders/get-order-details";
 import { GetOrderDetailsController } from "./get-order-details.controller";
+import { GetOrdersController } from "./get-orders.controller";
+import { GetOrdersUseCase } from "@/domain/logistics/application/use-cases/orders/get-orders";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
   controllers: [
     CreateOrderController,
-    GetOrderDetailsController
+    GetOrderDetailsController,
+    GetOrdersController
   ],
   providers: [
     {
@@ -21,7 +24,8 @@ import { GetOrderDetailsController } from "./get-order-details.controller";
       useClass: JwtAuthGuard
     },
     CreateOrderUseCase,
-    GetOrderDetailsUseCase
+    GetOrderDetailsUseCase,
+    GetOrdersUseCase
   ]
 })
 export class OrdersModule {}
