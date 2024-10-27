@@ -1,47 +1,41 @@
 import { Either, left, right } from "@/core/either"
 import { OrdersRepository } from "../../repositories/orders-repository"
-import { Order } from "../../../enterprise/entities/order"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
-import { AdminsRepository } from "../../repositories/admins-repository"
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
+import { Injectable } from "@nestjs/common"
 
 interface SetOrderAsPickedUpUseCaseRequest {
   orderId: string
-  adminId: string
   delivererId: string
 }
 
 type SetOrderAsPickedUpUseCaseResponse = Either<ResourceNotFoundError, object>
 
+@Injectable()
 export class SetOrderAsPickedUpUseCase {
   constructor(
-    private ordersRepository: OrdersRepository, 
-    private adminsRepository: AdminsRepository, 
+    private ordersRepository: OrdersRepository,
     private deliverersRepository: DeliverersRepository
   ) {}
 
   async execute({
     orderId,
     delivererId,
-    adminId
   } : SetOrderAsPickedUpUseCaseRequest): Promise<SetOrderAsPickedUpUseCaseResponse> {
     const order = await this.ordersRepository.findById(orderId)
 
     if(!order) return left(new ResourceNotFoundError())
 
-    const admin = await this.adminsRepository.findById(adminId)
-
-    if(!admin) return left(new ResourceNotFoundError())
 
     const deliverer = await this.deliverersRepository.findById(delivererId)
 
     if(!deliverer) return left(new ResourceNotFoundError())
     
-    await this.adminsRepository.attendOrderToDeliverer(order, delivererId)
-
+    deliverer.attendOrder(order)
     order.setAsPickedUp(delivererId)
 
     await this.ordersRepository.save(order)
+    await this.deliverersRepository.save(deliverer)
 
     return right({})
   }

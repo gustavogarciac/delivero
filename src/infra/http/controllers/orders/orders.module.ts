@@ -14,6 +14,8 @@ import { SetOrderAsAvailableToPickUpController } from "./set-order-as-available-
 import { SetOrderAsAvailableToPickUpUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-available-to-pick-up";
 import { SetOrderAsDeliveredController } from "./set-order-as-delivered.controller";
 import { SetOrderAsDeliveredUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-delivered";
+import { SetOrderAsPickedUpController } from "./set-order-as-picked-up.controller";
+import { SetOrderAsPickedUpUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-picked-up";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
@@ -22,7 +24,8 @@ import { SetOrderAsDeliveredUseCase } from "@/domain/logistics/application/use-c
     GetOrderDetailsController,
     GetOrdersController,
     SetOrderAsAvailableToPickUpController,
-    SetOrderAsDeliveredController
+    SetOrderAsDeliveredController,
+    SetOrderAsPickedUpController
   ],
   providers: [
     {
@@ -33,7 +36,8 @@ import { SetOrderAsDeliveredUseCase } from "@/domain/logistics/application/use-c
     GetOrderDetailsUseCase,
     GetOrdersUseCase,
     SetOrderAsAvailableToPickUpUseCase,
-    SetOrderAsDeliveredUseCase
+    SetOrderAsDeliveredUseCase,
+    SetOrderAsPickedUpUseCase
   ]
 })
 export class OrdersModule {}
