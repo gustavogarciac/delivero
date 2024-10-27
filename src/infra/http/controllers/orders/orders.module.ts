@@ -16,6 +16,8 @@ import { SetOrderAsDeliveredController } from "./set-order-as-delivered.controll
 import { SetOrderAsDeliveredUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-delivered";
 import { SetOrderAsPickedUpController } from "./set-order-as-picked-up.controller";
 import { SetOrderAsPickedUpUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-picked-up";
+import { SetOrderAsReturnedUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-returned";
+import { SetOrderAsReturnedController } from "./set-order-as-returned.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, MailerModule],
@@ -25,7 +27,8 @@ import { SetOrderAsPickedUpUseCase } from "@/domain/logistics/application/use-ca
     GetOrdersController,
     SetOrderAsAvailableToPickUpController,
     SetOrderAsDeliveredController,
-    SetOrderAsPickedUpController
+    SetOrderAsPickedUpController,
+    SetOrderAsReturnedController,
   ],
   providers: [
     {
@@ -37,7 +40,8 @@ import { SetOrderAsPickedUpUseCase } from "@/domain/logistics/application/use-ca
     GetOrdersUseCase,
     SetOrderAsAvailableToPickUpUseCase,
     SetOrderAsDeliveredUseCase,
-    SetOrderAsPickedUpUseCase
+    SetOrderAsPickedUpUseCase,
+    SetOrderAsReturnedUseCase
   ]
 })
 export class OrdersModule {}
