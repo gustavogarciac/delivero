@@ -1,21 +1,12 @@
 import { DomainEvents } from "@/core/events/domain-events"
-import { envSchema } from "@/infra/env/env"
 import { PrismaClient } from "@prisma/client"
 import { execSync } from "node:child_process"
 import { config } from "dotenv"
 import { randomUUID } from "node:crypto"
 
-config({
-  path: './env',
-  override: true,
-})
+const envFile = process.env.NODE_ENV === 'test' ? './.env.test' : './.env'
 
-config({
-  path: './env.test',
-  override: true,
-})
-
-const env = envSchema.parse(process.env)
+config({ path: envFile, override: true })
 
 const prisma = new PrismaClient()
 

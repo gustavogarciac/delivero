@@ -18,9 +18,13 @@ import { SetOrderAsPickedUpController } from "./set-order-as-picked-up.controlle
 import { SetOrderAsPickedUpUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-picked-up";
 import { SetOrderAsReturnedUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-returned";
 import { SetOrderAsReturnedController } from "./set-order-as-returned.controller";
+import { StorageModule } from "@/infra/storage/storage.module";
+import { EnvModule } from "@/infra/env/env.module";
+import { UploadOrderAttachmentController } from "./upload-order-attachment.controller";
+import { UploadOrderAttachmentUseCase } from "@/domain/logistics/application/use-cases/orders/upload-order-attachment";
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule, MailerModule],
+  imports: [DatabaseModule, CryptographyModule, MailerModule, StorageModule, EnvModule],
   controllers: [
     CreateOrderController,
     GetOrderDetailsController,
@@ -29,6 +33,7 @@ import { SetOrderAsReturnedController } from "./set-order-as-returned.controller
     SetOrderAsDeliveredController,
     SetOrderAsPickedUpController,
     SetOrderAsReturnedController,
+    UploadOrderAttachmentController
   ],
   providers: [
     {
@@ -41,7 +46,8 @@ import { SetOrderAsReturnedController } from "./set-order-as-returned.controller
     SetOrderAsAvailableToPickUpUseCase,
     SetOrderAsDeliveredUseCase,
     SetOrderAsPickedUpUseCase,
-    SetOrderAsReturnedUseCase
+    SetOrderAsReturnedUseCase,
+    UploadOrderAttachmentUseCase
   ]
 })
 export class OrdersModule {}

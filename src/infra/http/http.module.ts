@@ -6,6 +6,7 @@ import { DelivererModule } from "./controllers/deliverers/deliverer.module";
 import { RecipientModule } from "./controllers/recipients/recipients.module";
 import { AdminsModule } from "./controllers/admins/admins.module";
 import { OrdersModule } from "./controllers/orders/orders.module";
+import { StorageModule } from "../storage/storage.module";
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { OrdersModule } from "./controllers/orders/orders.module";
     RecipientModule, 
     AdminsModule,
     OrdersModule,
-    MailerModule
+    MailerModule,
+    StorageModule
   ],
 })
 export class HttpModule {}

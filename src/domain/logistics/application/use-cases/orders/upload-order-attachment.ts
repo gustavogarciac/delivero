@@ -5,8 +5,8 @@ import { DeliverersRepository } from "../../repositories/deliverers-repository"
 import { Uploader } from "../../uploader/uploder"
 import { BadRequestError } from "@/core/errors/bad-request-error"
 import { OrderAttachment } from "@/domain/logistics/enterprise/entities/order-attachment"
-import { Attachment } from "@/domain/logistics/enterprise/entities/attachment"
 import { OrderAttachmentsRepository } from "../../repositories/order-attachments-repository"
+import { Injectable } from "@nestjs/common"
 
 interface UploadOrderAttachmentUseCaseRequest {
   fileName: string
@@ -20,6 +20,7 @@ type UploadOrderAttachmentUseCaseResponse = Either<ResourceNotFoundError | BadRe
   orderAttachment: OrderAttachment
 }>
 
+@Injectable()
 export class UploadOrderAttachmentUseCase {
   constructor(
     private ordersRepository: OrdersRepository, 
