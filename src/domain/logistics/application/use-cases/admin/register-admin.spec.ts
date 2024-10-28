@@ -19,7 +19,7 @@ describe("Create Admin Use Case", async () => {
   })
 
   it("should be able to create a admin", async () => {
-    const admin = makeAdmin({}, { cpf: Cpf.create("40171993055") })
+    const admin = makeAdmin({}, { cpf: Cpf.create("401.719.930-55") })
 
     const result = await sut.execute({
       cpf: admin.cpf.value,

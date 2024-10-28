@@ -24,12 +24,9 @@ describe("Update deliverer Use Case", async () => {
 
     const result = await sut.execute({
       delivererId: deliverer.id.toString(),
-      cpf: deliverer.cpf,
       name: "John Doe",
       password: "password",
       email: "john@doe.com",
-      latitude: 0,
-      longitude: 0,
       phone: "123456789"
     })
 
@@ -41,12 +38,9 @@ describe("Update deliverer Use Case", async () => {
   it("should throw an error if delivery man does not exist", async () => {
     const result = await sut.execute({
       delivererId: "non-existing-id",
-      cpf: Cpf.create(), 
       name: "John Doe", 
       password: "password",
       email: "john@email.com",
-      latitude: 0,
-      longitude: 0,
       phone: "123456789"
     })
 
@@ -64,12 +58,9 @@ describe("Update deliverer Use Case", async () => {
 
     const result = await sut.execute({
       delivererId: secondDeliverer.id.toString(),
-      cpf: secondDeliverer.cpf,
       name: "John Doe",
       password: "password",
       email: deliverer.email,
-      latitude: 0,
-      longitude: 0,
       phone: "123456789"
     })
 

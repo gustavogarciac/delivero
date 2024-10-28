@@ -5,6 +5,8 @@ import { BadRequestError } from "@/core/errors/bad-request-error";
 import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 import { RegisterAdminUseCase } from "@/domain/logistics/application/use-cases/admin/register-admin";
 import { Public } from "@/infra/auth/public";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {  RegisterAdminRequestDTO, RegisterAdminResponseDTO } from "./documentation/register-admin.controller.docs";
 
 const registerAdminSchema = z.object({
   cpf: z.string(),
@@ -14,14 +16,19 @@ const registerAdminSchema = z.object({
   phone: z.string()
 })
 
-type RegisterAdminSchema = z.infer<typeof registerAdminSchema>
-
+export type RegisterAdminSchema = z.infer<typeof registerAdminSchema>
+@ApiTags("Admins")
 @Controller()
 export class RegisterAdminController {
   constructor(private registerAdminUseCase: RegisterAdminUseCase) {}
 
   @Post("/admins")
   @HttpCode(201)
+  @ApiOperation({ summary: "Register a new admin" })
+  @ApiResponse({ status: 201, description: "Admin created", type: RegisterAdminResponseDTO })
+  @ApiResponse({ status: 401, description: "Unauthorized"  })
+  @ApiResponse({ status: 400, description: "Bad Request"  })
+  @ApiBody({ type: RegisterAdminRequestDTO })
   @Public()
   @UsePipes(new ZodValidationPipe(registerAdminSchema))
   async handle(

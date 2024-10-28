@@ -15,9 +15,9 @@ describe("Create Order Use Case", async () => {
 
   it("should create an order", async () => {
     const order = {
-      delivererId: new UniqueEntityId(),
-      recipientId: new UniqueEntityId(),
-      adminId: new UniqueEntityId(),
+      delivererId: new UniqueEntityId().toString(),
+      recipientId: new UniqueEntityId().toString(),
+      adminId: new UniqueEntityId().toString(),
       deliveryAddress: faker.location.streetAddress(),
       geo: Geolocalization.create({ latitude: 34.1234, longitude: -118.5678 }),
       notes: faker.lorem.sentence(),
