@@ -5,7 +5,7 @@ import { BadRequestError } from "@/core/errors/bad-request-error";
 import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 import { RegisterAdminUseCase } from "@/domain/logistics/application/use-cases/admin/register-admin";
 import { Public } from "@/infra/auth/public";
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import {  RegisterAdminRequestDTO, RegisterAdminResponseDTO } from "./documentation/register-admin.controller.docs";
 
 const registerAdminSchema = z.object({
@@ -18,6 +18,7 @@ const registerAdminSchema = z.object({
 
 export type RegisterAdminSchema = z.infer<typeof registerAdminSchema>
 @ApiTags("Admins")
+@ApiBearerAuth()
 @Controller()
 export class RegisterAdminController {
   constructor(private registerAdminUseCase: RegisterAdminUseCase) {}

@@ -6,19 +6,28 @@ import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 import { SetUserAsActiveUseCase } from "@/domain/logistics/application/use-cases/admin/set-user-as-active";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { SetUserAsActiveDTO } from "./documentation/set-user-as-active.controller.docs";
 
 const setUserAsActiveParamSchema = z.object({
   delivererId: z.string()
 })
 
-type SetUserAsActiveParamSchema = z.infer<typeof setUserAsActiveParamSchema>
+export type SetUserAsActiveParamSchema = z.infer<typeof setUserAsActiveParamSchema>
 
+@ApiTags('Admins')
+@ApiBearerAuth()
 @Controller()
 export class SetUserAsActiveController {
   constructor(private setUserAsActiveUseCase: SetUserAsActiveUseCase) {}
 
   @Patch("/admins/set-user-as-active/:delivererId")
   @HttpCode(204)
+  @ApiOperation({ summary: "Set user as active" })
+  @ApiResponse({ status: 201, description: "User set as active", type: SetUserAsActiveDTO })
+  @ApiResponse({ status: 401, description: "Unauthorized"  })
+  @ApiResponse({ status: 400, description: "Bad Request"  })
+  @ApiParam({ name: "delivererId", type: "string" })
   async handle(
     @CurrentUser() admin: UserPayload,
     @Param(new ZodValidationPipe(setUserAsActiveParamSchema)) params: SetUserAsActiveParamSchema
