@@ -4,6 +4,8 @@ import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Public } from "@/infra/auth/public";
 import { CreateDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/create-delivery-man";
+import { ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { CreateDelivererRequestDTO, CreateDelivererResponseDTO } from "./docs/create-delivery-man.controller.docs";
 
 const createDelivererSchema = z.object({
   cpf: z.string(),
@@ -15,12 +17,16 @@ const createDelivererSchema = z.object({
   longitude: z.number(),
 })
 
-type CreateDelivererSchema = z.infer<typeof createDelivererSchema>
+export type CreateDelivererSchema = z.infer<typeof createDelivererSchema>
 
+@ApiTags('Deliverers')
 @Controller()
 export class CreateDelivererController {
   constructor(private createDelivererUseCase: CreateDelivererUseCase) {}
 
+  @ApiResponse({ status: 201, description: "Success", type: CreateDelivererResponseDTO })
+  @ApiResponse({ status: 400, description: "Bad Request" })
+  @ApiBody({ type: CreateDelivererRequestDTO })
   @Post("/deliverers")
   @HttpCode(201)
   @Public()

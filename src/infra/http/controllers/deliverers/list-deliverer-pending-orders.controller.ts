@@ -8,6 +8,7 @@ import { BadRequestError } from "@/core/errors/bad-request-error";
 import { OrderPresenter } from "../../presenters/order-presenter";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 const paginationQueryParamSchema = z.object({
   page: z
@@ -41,12 +42,44 @@ const listDelivererPendingOrdersParamSchemaValidationPipe = new ZodValidationPip
 )
 
 
+@ApiTags("Deliverers")
+@ApiBearerAuth()
 @Controller()
 export class ListDelivererPendingOrdersController {
   constructor(private listDelivererPendingOrdersUseCase: ListPendingOrdersUseCase) {}
 
   @Get("/deliverers/:delivererId/orders/pending")
   @HttpCode(200)
+  @ApiOperation({ summary: "List pending orders for a deliverer" })
+  @ApiParam({ name: "delivererId", description: "ID of the deliverer", required: true })
+  @ApiQuery({ name: "page", description: "Page number for pagination", required: false })
+  @ApiQuery({ name: "per_page", description: "Number of items per page", required: false })
+  @ApiQuery({ name: "count", description: "Include count of total items", required: false, type: Boolean })
+  @ApiResponse({ status: 200, description: "Orders list successfully retrieved", schema: {
+    example: {
+      orders: 
+      [
+        {
+          id: "order-id",
+          status: "PENDING",
+          pickupCode: "pickup-code",
+          deliveryAddress: "address",
+          latitude: 12.34567,
+          longitude: 54.321,
+          trackingCode: "tracking-code",
+          notes: "Any notes",
+          pickedAt: null,
+          deliveredAt: null,
+          returnedAt: null,
+          createdAt: "date",
+          updatedAt: "date"
+        }
+      ],
+      total: 100
+    }
+  }})
+  @ApiUnauthorizedResponse({ description: "You can only list your own orders" })
+  @ApiBadRequestResponse({ description: "Invalid parameters or bad request" })
   async handle(
     @CurrentUser() user: UserPayload,
     @Query(paginationQueryValidationPipe) paginationParams: PaginationQueryParamSchema,

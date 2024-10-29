@@ -1,9 +1,10 @@
 import { Controller, Get, HttpCode, Query } from "@nestjs/common";
 import { FetchDeliverersUseCase } from "@/domain/logistics/application/use-cases/deliverer/fetch-delivery-men";
-import { PaginationParams } from "@/core/repositories/pagination";
 import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { DelivererPresenter } from "../../presenters/deliverer-presenter";
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { FetchDelivererResponseDTO } from "./docs/fetch-deliverer.controller.docs";
 
 const paginationQueryParamSchema = z.object({
   page: z
@@ -22,17 +23,18 @@ const paginationQueryParamSchema = z.object({
   query: z.string().optional(),
 })
 
-type PaginationQueryParamSchema = z.infer<typeof paginationQueryParamSchema>
+export type PaginationQueryParamSchema = z.infer<typeof paginationQueryParamSchema>
 
 const paginationQueryValidationPipe = new ZodValidationPipe(
   paginationQueryParamSchema,
 )
-
-
+@ApiTags('Deliverers')
+@ApiBearerAuth()
 @Controller()
 export class FetchDeliverersController {
   constructor(private fetchDelivererUseCase: FetchDeliverersUseCase) {}
 
+  @ApiResponse({ status: 200, description: 'Deliverers were fetched successfully', type: FetchDelivererResponseDTO })
   @Get("/deliverers")
   @HttpCode(200)
   async handle(
