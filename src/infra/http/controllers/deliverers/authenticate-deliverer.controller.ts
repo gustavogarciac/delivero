@@ -4,8 +4,7 @@ import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Public } from "@/infra/auth/public";
-import { ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthenticateDelivererRequestDTO, AuthenticateDelivererResponseDTO } from "./docs/authenticate-deliverer.controller.docs";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const authenticateDelivererSchema = z.object({
   cpf: z.string(),
@@ -22,9 +21,21 @@ export class AuthenticateDelivererController {
   @Post("/sessions/deliverers")
   @HttpCode(201)
   @Public()
+  @ApiOperation({ summary: "Authenticate a deliverer" })
   @UsePipes(new ZodValidationPipe(authenticateDelivererSchema))
-  @ApiBody({ type: AuthenticateDelivererRequestDTO })
-  @ApiResponse({ status: 201, type: AuthenticateDelivererResponseDTO })
+  @ApiBody({ description: "Data needed to authenticate a deliverer", schema: {
+    type: "object",
+    properties: {
+      cpf: { type: "string", example: "123.456.789-00", description: "CPF of the deliverer" },
+      password: { type: "string", example: "password123", minLength: 6, description: "Password for the deliverer" }
+    },
+    required: ["cpf", "password"]
+  }})
+  @ApiResponse({ status: 201, description: 'Deliverer authenticated', schema: {
+    example: {
+      access_token: "0192da91-46b4-7999-b60e-82d7a0f2178f"
+    }
+  }})
   async handle(
     @Body() body: AuthenticateDelivererSchema
   ) {

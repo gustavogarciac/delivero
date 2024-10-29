@@ -7,7 +7,6 @@ import { SetUserAsActiveUseCase } from "@/domain/logistics/application/use-cases
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { SetUserAsActiveDTO } from "./documentation/set-user-as-active.controller.docs";
 
 const setUserAsActiveParamSchema = z.object({
   delivererId: z.string()
@@ -24,7 +23,7 @@ export class SetUserAsActiveController {
   @Patch("/admins/set-user-as-active/:delivererId")
   @HttpCode(204)
   @ApiOperation({ summary: "Set user as active" })
-  @ApiResponse({ status: 201, description: "User set as active", type: SetUserAsActiveDTO })
+  @ApiResponse({ status: 204, description: 'User set as active' })
   @ApiResponse({ status: 401, description: "Unauthorized"  })
   @ApiResponse({ status: 400, description: "Bad Request"  })
   @ApiParam({ name: "delivererId", type: "string" })

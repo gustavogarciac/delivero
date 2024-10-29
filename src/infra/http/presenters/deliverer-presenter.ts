@@ -17,7 +17,7 @@ export class DelivererPresenter {
       isAvailable: deliverer.isAvailable,
       status: deliverer.status,
       role: deliverer.role,
-      vehicle: deliverer.vehicle,
+      vehicle: deliverer.vehicle?.model,
       orders: deliverer.orders.map(OrderPresenter.toHttp),
       registeredAt: deliverer.registeredAt,
       updatedAt: deliverer.updatedAt,

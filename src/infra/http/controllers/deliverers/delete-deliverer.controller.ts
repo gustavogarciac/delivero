@@ -3,8 +3,7 @@ import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { DeleteDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/delete-delivery-man";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
-import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { DeleteDelivererRequestDTO } from "./docs/delete-deliverer.controller.docs";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const deleteDelivererSchema = z.object({
   delivererId: z.string()
@@ -18,10 +17,13 @@ export type DeleteDelivererSchema = z.infer<typeof deleteDelivererSchema>
 export class DeleteDelivererController {
   constructor(private deleteDelivererUseCase: DeleteDelivererUseCase) {}
 
+  @ApiOperation({ summary: "Delete a deliverer" })
   @ApiResponse({ status: 204, description: "Deliverer deleted successfully" })
   @ApiResponse({ status: 400, description: "Bad Request" })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  @ApiParam({ type: DeleteDelivererRequestDTO, name: "delivererId" })
+  @ApiParam({ name: "delivererId", type: String, required: true, example: "0192da91-46b4-7999-b60e-82d7a0f2178f" })
+  @ApiBadRequestResponse({ description: "Deliverer not found" })
+  @ApiNotFoundResponse({ description: "Deliverer not found" })
   @Delete("/deliverers/:delivererId")
   @HttpCode(204)
   @UsePipes(new ZodValidationPipe(deleteDelivererSchema))

@@ -3,8 +3,7 @@ import { FetchDeliverersUseCase } from "@/domain/logistics/application/use-cases
 import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { DelivererPresenter } from "../../presenters/deliverer-presenter";
-import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { FetchDelivererResponseDTO } from "./docs/fetch-deliverer.controller.docs";
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const paginationQueryParamSchema = z.object({
   page: z
@@ -34,7 +33,52 @@ const paginationQueryValidationPipe = new ZodValidationPipe(
 export class FetchDeliverersController {
   constructor(private fetchDelivererUseCase: FetchDeliverersUseCase) {}
 
-  @ApiResponse({ status: 200, description: 'Deliverers were fetched successfully', type: FetchDelivererResponseDTO })
+  @ApiOperation({ summary: 'Fetch deliverers' })
+  @ApiResponse({ status: 200, description: 'Deliverers were fetched successfully', schema: {
+    example: {
+      deliverers: [
+        {
+          id: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+          name: 'John Doe',
+          email: "johndoe@example.com",
+          phone: "1234567890",
+          rating: 4.5,
+          deliveriesCount: 73,
+          latitude: -23.5505199,
+          longitude: -46.6333094,
+          isAvailable: true,
+          status: "ACTIVE",
+          role: "DELIVERER",
+          vehicle: "CHEVROLET ONIX",
+          orders: [
+            {
+              id: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+              recipientId: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+              delivererId: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+              status: 'DELIVERED',
+              deliveryAddress: 'Rua da Consolação, 1000',
+              geo: {
+                latitude: -23.5505199,
+                longitude: -46.6333094,
+              },
+              trackingCode: "321321342",
+              notes: 'Do not bend',
+              pickedAt: "",
+              deliveredAt: '2021-09-01T00:00:00Z',
+              updatedAt: '2021-09-01T00:00:00Z',
+              returnedAt: '2021-09-01T00:00:00Z',
+            }
+          ],
+          registeredAt: "2021-09-01T00:00:00Z",
+          updatedAt: "2021-09-01T00:00:00Z",
+        }
+      ]
+    }
+  } })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'per_page', required: false, type: Number, example: 20 })
+  @ApiQuery({ name: 'count', required: false, type: Boolean, example: false })
+  @ApiQuery({ name: 'query', required: false, type: String, example: 'John Doe' })
   @Get("/deliverers")
   @HttpCode(200)
   async handle(

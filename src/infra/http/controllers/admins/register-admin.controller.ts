@@ -6,7 +6,6 @@ import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 import { RegisterAdminUseCase } from "@/domain/logistics/application/use-cases/admin/register-admin";
 import { Public } from "@/infra/auth/public";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import {  RegisterAdminRequestDTO, RegisterAdminResponseDTO } from "./documentation/register-admin.controller.docs";
 
 const registerAdminSchema = z.object({
   cpf: z.string(),
@@ -26,10 +25,27 @@ export class RegisterAdminController {
   @Post("/admins")
   @HttpCode(201)
   @ApiOperation({ summary: "Register a new admin" })
-  @ApiResponse({ status: 201, description: "Admin created", type: RegisterAdminResponseDTO })
+  @ApiResponse({ status: 200, description: 'Admin registered', schema: {
+    example: {
+      adminId: "0192da32-335d-7334-ae87-af73ed06fd60"
+    }
+  }})
   @ApiResponse({ status: 401, description: "Unauthorized"  })
   @ApiResponse({ status: 400, description: "Bad Request"  })
-  @ApiBody({ type: RegisterAdminRequestDTO })
+  @ApiBody({
+    description: "Data needed to register a new admin",
+    schema: {
+      type: "object",
+      properties: {
+        cpf: { type: "string", example: "123.456.789-00", description: "CPF of the admin" },
+        email: { type: "string", example: "admin@example.com", description: "Email of the admin" },
+        name: { type: "string", example: "Admin Name", description: "Name of the admin" },
+        password: { type: "string", example: "password123", minLength: 6, maxLength: 200, description: "Password for the admin" },
+        phone: { type: "string", example: "+5511999999999", description: "Phone number of the admin" },
+      },
+      required: ["cpf", "email", "name", "password", "phone"]
+    }
+  })
   @Public()
   @UsePipes(new ZodValidationPipe(registerAdminSchema))
   async handle(
