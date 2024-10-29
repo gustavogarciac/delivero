@@ -4,6 +4,7 @@ import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { SetOrderAsPickedUpUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-picked-up";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 
 const setOrderAsPickedUpParamSchema = z.object({
   orderId: z.string().uuid(),
@@ -12,10 +13,17 @@ const setOrderAsPickedUpParamSchema = z.object({
 
 type SetOrderAsPickedUpParamSchema = z.infer<typeof setOrderAsPickedUpParamSchema>
 
+@ApiTags('Orders')
+@ApiBearerAuth()
 @Controller()
 export class SetOrderAsPickedUpController {
   constructor(private setOrderAsPickedUpUseCase: SetOrderAsPickedUpUseCase) {}
 
+  @ApiOperation({ summary: 'Set order as picked up' })
+  @ApiParam({ name: 'orderId', type: 'string', required: true })
+  @ApiParam({ name: 'delivererId', type: 'string', required: true })
+  @ApiBadRequestResponse({ description: 'Invalid credentials' })
+  @ApiNotFoundResponse({ description: 'Order not found' })
   @Patch("/orders/:orderId/pick-up/:delivererId")
   @HttpCode(204)
   @UsePipes(new ZodValidationPipe(setOrderAsPickedUpParamSchema))

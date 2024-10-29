@@ -4,6 +4,7 @@ import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { OrderPresenter } from "../../presenters/order-presenter";
 import { GetOrdersUseCase } from "@/domain/logistics/application/use-cases/orders/get-orders";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 const getOrdersQuerySchema = z.object({
   page: z.coerce.number().default(1),
@@ -14,10 +15,19 @@ const getOrdersQuerySchema = z.object({
 
 type GetOrdersQuerySchema = z.infer<typeof getOrdersQuerySchema>
 
+@ApiBearerAuth()
+@ApiTags("Orders")
 @Controller()
 export class GetOrdersController {
   constructor(private getOrdersUseCase: GetOrdersUseCase) {}
 
+  @ApiOperation({ summary: "Get orders" })
+  @ApiQuery({ name: "page", description: "Page", type: Number, required: false })
+  @ApiQuery({ name: "perPage", description: "Items per page", type: Number, required: false })
+  @ApiQuery({ name: "count", description: "Count items", type: Boolean, required: false })
+  @ApiQuery({ name: "query", description: "Search query", type: String, required: false })
+  @ApiBadRequestResponse({ description: "Bad Request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get("/orders")
   @HttpCode(200)
   @UsePipes(new ZodValidationPipe(getOrdersQuerySchema))

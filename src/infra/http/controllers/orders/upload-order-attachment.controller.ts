@@ -5,6 +5,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { UploadOrderAttachmentUseCase } from "@/domain/logistics/application/use-cases/orders/upload-order-attachment";
 import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 
 const uploadOrderAttachmentSchema = z.object({
   orderId: z.string().uuid(),
@@ -13,10 +14,16 @@ const uploadOrderAttachmentSchema = z.object({
 
 type UploadOrderAttachmentSchemaType = z.infer<typeof uploadOrderAttachmentSchema>
 
+@ApiBearerAuth()
+@ApiTags('Orders')
 @Controller()
 export class UploadOrderAttachmentController {
   constructor(private uploadOrderAttachmentUseCase: UploadOrderAttachmentUseCase) {}
 
+  @ApiOperation({ summary: 'Upload order attachment' })
+  @ApiBody({ description: 'Order attachment', type: 'file', required: true })
+  @ApiParam({ name: 'orderId', type: 'string', required: true })
+  @ApiParam({ name: 'delivererId', type: 'string', required: true })
   @Post("/orders/:orderId/deliverers/:delivererId/attachments")
   @UseInterceptors(FileInterceptor('file'))
   async handle(

@@ -3,6 +3,7 @@ import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { SetOrderAsAvailableToPickUpUseCase } from "@/domain/logistics/application/use-cases/orders/set-order-as-available-to-pick-up";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const setOrderAsAvailableToPickUpParamSchema = z.object({
   orderId: z.string()
@@ -10,10 +11,16 @@ const setOrderAsAvailableToPickUpParamSchema = z.object({
 
 type SetOrderAsAvailableToPickUpParamSchema = z.infer<typeof setOrderAsAvailableToPickUpParamSchema>
 
+@ApiTags('Orders')
+@ApiBearerAuth()
 @Controller()
 export class SetOrderAsAvailableToPickUpController {
   constructor(private setOrderAsAvailableToPickUpUseCase: SetOrderAsAvailableToPickUpUseCase) {}
 
+  @ApiOperation({ summary: 'Set order as available to pick up' })
+  @ApiParam({ name: 'orderId', type: 'string', required: true })
+  @ApiResponse({ status: 204, description: 'Order set as available to pick up' })
+  @ApiBadRequestResponse({ description: 'Invalid credentials' })
   @Patch("/orders/:orderId/available-to-pick-up")
   @HttpCode(204)
   @UsePipes(new ZodValidationPipe(setOrderAsAvailableToPickUpParamSchema))
