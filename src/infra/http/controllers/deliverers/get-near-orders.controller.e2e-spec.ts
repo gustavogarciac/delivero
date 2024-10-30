@@ -38,7 +38,7 @@ describe("Get Deliverer Profile (e2e)", () => {
     await app.init()
   })
 
-  test("[GET] /deliverers/near-orders", async () => {
+  test("[GET] /deliverers/:delivererId/orders/near", async () => {
     const deliverer = await delivererFactory.makePrismaDeliverer()
     const recipient = await recipientFactory.makePrismaRecipient()
     const rightOrder = await orderFactory.makePrismaOrder({ delivererId: deliverer.id, geo: Geolocalization.create({ latitude: -23.5505199, longitude: -46.63330939999999 }), recipientId: recipient.id, status: OrderStatus.AWAITING_PICKUP })
@@ -48,13 +48,12 @@ describe("Get Deliverer Profile (e2e)", () => {
     const accessToken = jwt.sign({ sub: deliverer.id.toString() })
 
     const response = await request(app.getHttpServer())
-    .get(`/near-orders`)
+    .get(`/deliverers/${deliverer.id.toString()}/orders/near`)
     .set("Authorization", `Bearer ${accessToken}`)
-    .send({
+    .query({
       latitude: -23.5505199,
       longitude: -46.63330939999999,
-      maxDistance: 1000,
-      delivererId: deliverer.id.toString()
+      maxDistance: 1000
     })
 
     expect(response.statusCode).toBe(200)

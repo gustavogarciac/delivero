@@ -1,18 +1,23 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, Param, Query, UsePipes } from "@nestjs/common";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { GetNearOrdersUseCase } from "@/domain/logistics/application/use-cases/deliverer/get-near-orders";
 import { BadRequestError } from "@/core/errors/bad-request-error";
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiProperty, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { OrderPresenter } from "../../presenters/order-presenter";
 
-const getNearOrdersSchema = z.object({
+const getNearOrdersQuerySchema = z.object({
   latitude: z.coerce.number(),
   longitude: z.coerce.number(),
   maxDistance: z.coerce.number(),
-  delivererId: z.string()
 })
 
-export type GetNearOrdersSchema = z.infer<typeof getNearOrdersSchema>
+const getNearOrdersParamSchema = z.object({
+  delivererId: z.string().uuid(),
+})
+
+export type GetNearOrdersQuerySchema = z.infer<typeof getNearOrdersQuerySchema>
+export type GetNearOrdersParamSchema = z.infer<typeof getNearOrdersParamSchema>
 
 @ApiTags("Deliverers")
 @ApiBearerAuth()
@@ -45,28 +50,25 @@ export class GetNearOrdersController {
     }
   }})
   @ApiBadRequestResponse({ description: "Bad Request" })
-  @ApiBody({ description: "Get near orders", schema: {
-    example: {
-      latitude: -23.563987,
-      longitude: -46.653252,
-      maxDistance: 1000,
-      delivererId: "d2b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
-    }
-  }})
-  @Get("/near-orders")
+  @ApiParam({ name: "delivererId", description: "Deliverer ID", required: true })
+  @ApiQuery({ name: "latitude", description: "Latitude", required: true })
+  @ApiQuery({ name: "longitude", description: "Longitude", required: true })
+  @ApiQuery({ name: "maxDistance", description: "Max distance in kilometers", required: true })
+  @Get("/deliverers/:delivererId/orders/near")
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(getNearOrdersSchema))
   async handle(
-    @Body() params: GetNearOrdersSchema
+    @Param(new ZodValidationPipe(getNearOrdersParamSchema)) params: GetNearOrdersParamSchema,
+    @Query(new ZodValidationPipe(getNearOrdersQuerySchema)) query: GetNearOrdersQuerySchema
   ) {
-    const { latitude, longitude, maxDistance, delivererId } = params
+    const { delivererId } = params
+    const { latitude, longitude, maxDistance } = query
 
     const result = await this.getNearOrdersUseCase.execute({ 
       delivererId, 
       latitude, 
       longitude, 
       maxDistance
-  })
+    })
 
     if(result.isLeft()) {
       const error = result.value

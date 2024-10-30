@@ -44,7 +44,7 @@ describe("Get Deliverer Profile (e2e)", () => {
 
     expect(response.body).toEqual({
       deliverer: expect.objectContaining({
-        _id: deliverer.id,
+        id: deliverer.id.toString(),
       })
     })
   })
