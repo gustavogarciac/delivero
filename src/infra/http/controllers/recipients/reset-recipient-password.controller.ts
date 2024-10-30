@@ -4,6 +4,7 @@ import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Public } from "@/infra/auth/public";
 import { ResetRecipientPasswordUseCase } from "@/domain/logistics/application/use-cases/recipient/reset-recipient-password";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const resetRecipientPasswordSchema = z.object({
   email: z.string().email()
@@ -11,10 +12,23 @@ const resetRecipientPasswordSchema = z.object({
 
 type ResetRecipientPasswordSchema = z.infer<typeof resetRecipientPasswordSchema>
 
+@ApiTags("Recipients")
 @Controller()
 export class ResetRecipientPasswordController {
   constructor(private resetRecipientPasswordUseCase: ResetRecipientPasswordUseCase) {}
 
+  @ApiOperation({ summary: "Reset recipient password" })
+  @ApiResponse({ status: 201, description: "Recipient password reset successfully", schema: {
+    example: {
+      otp: "123456"
+    }
+  }})
+  @ApiBody({ description: "Reset recipient password", schema: {
+    example: {
+      email: "johndoe@example.com"
+    }
+  }})
+  @ApiBadRequestResponse({ description: "Bad request" })
   @Post("/sessions/recipients/reset-password")
   @Public()
   @HttpCode(201)

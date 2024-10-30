@@ -3,6 +3,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { UpdateRecipientUseCase } from "@/domain/logistics/application/use-cases/recipient/update-recipient";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const updateRecipientSchema = z.object({
   address: z.string(),
@@ -24,10 +25,26 @@ type UpdateRecipientParamSchema = z.infer<typeof updateRecipientParamSchema>
 
 const updateRecipientParamSchemaValidaiton = new ZodValidationPipe(updateRecipientParamSchema)
 
+@ApiTags("Recipients")
+@ApiBearerAuth()
 @Controller()
 export class UpdateRecipientController {
   constructor(private updateRecipientUseCase: UpdateRecipientUseCase) {}
 
+  @ApiOperation({ summary: "Update recipient" })
+  @ApiBody({ description: "Update recipient", schema: {
+    example: {
+      address: "Rua da Consolação, 1000",
+      city: "São Paulo",
+      country: "Brazil",
+      email: "johndoe@example.com",
+      name: "John Doe",
+      phone: "+5511987654321",
+
+    }
+  }})
+  @ApiParam({ name: "recipientId", type: String, required: true })
+  @ApiResponse({ status: 204, description: "Recipient successfully updated" })
   @Put("/recipients/:recipientId")
   @HttpCode(204)
   async handle(

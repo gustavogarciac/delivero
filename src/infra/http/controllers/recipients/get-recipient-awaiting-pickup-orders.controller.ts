@@ -7,6 +7,7 @@ import { GetRecipientAwaitingPickupOrdersUseCase } from "@/domain/logistics/appl
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
 import { OrderPresenter } from "../../presenters/order-presenter";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 
 const getRecipientAwaitingPickupOrdersParamsSchema = z.object({
@@ -22,10 +23,40 @@ const getRecipientAwaitingPickupOrdersQuerySchema = z.object({
 type GetRecipientAwaitingPickupOrdersParamsSchema = z.infer<typeof getRecipientAwaitingPickupOrdersParamsSchema>
 type GetRecipientAwaitingPickupOrdersQuerySchema = z.infer<typeof getRecipientAwaitingPickupOrdersQuerySchema>
 
+@ApiTags('Recipients')
+@ApiBearerAuth()
 @Controller()
 export class GetRecipientAwaitingPickupOrdersController {
   constructor(private getRecipientAwaitingPickupOrdersUseCase: GetRecipientAwaitingPickupOrdersUseCase) {}
 
+  @ApiOperation({ summary: 'Get recipient awaiting pickup orders' })
+  @ApiParam({ name: 'recipientId', description: 'Recipient ID', required: true })
+  @ApiQuery({ name: 'page', description: 'Page', required: false })
+  @ApiQuery({ name: 'perPage', description: 'Per page', required: false })
+  @ApiQuery({ name: 'count', description: 'Count', required: false })
+  @ApiResponse({ status: 200, description: 'Recipient awaiting pickup orders', schema: {
+    example: {
+      order: {
+        id: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+        recipientId: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+        delivererId: '0192da91-46b4-7999-b60e-82d7a0f2178f',
+        status: 'DELIVERED',
+        deliveryAddress: 'Rua da Consolação, 1000',
+        geo: {
+          latitude: -23.5505199,
+          longitude: -46.6333094,
+        },
+        trackingCode: "321321342",
+        notes: 'Do not bend',
+        pickedAt: "",
+        deliveredAt: '2021-09-01T00:00:00Z',
+        updatedAt: '2021-09-01T00:00:00Z',
+        returnedAt: '2021-09-01T00:00:00Z',
+      }
+    }
+  }})
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @Get("/recipients/:recipientId/orders/awaiting-pickup")
   @HttpCode(200)
   async handle(

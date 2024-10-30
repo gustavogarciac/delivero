@@ -5,6 +5,7 @@ import { BadRequestError } from "@/core/errors/bad-request-error";
 import { Public } from "@/infra/auth/public";
 import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 import { DeleteRecipientUseCase } from "@/domain/logistics/application/use-cases/recipient/delete-recipient";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const deleteRecipientParamsSchema = z.object({
   recipientId: z.string(),
@@ -12,10 +13,16 @@ const deleteRecipientParamsSchema = z.object({
 
 type DeleteRecipientParamsSchema = z.infer<typeof deleteRecipientParamsSchema>
 
+@ApiBearerAuth()
+@ApiTags('Recipients')
 @Controller()
 export class DeleteRecipientController {
   constructor(private deleteRecipientUseCase: DeleteRecipientUseCase) {}
 
+  @ApiOperation({ summary: 'Delete recipient' })
+  @ApiParam({ name: 'recipientId', description: 'Recipient ID', required: true })
+  @ApiResponse({ status: 204, description: 'Recipient deleted' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @Delete("/recipients/:recipientId")
   @HttpCode(204)
   @Public()

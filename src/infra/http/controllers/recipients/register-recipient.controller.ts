@@ -4,6 +4,7 @@ import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
 import { RegisterRecipientUseCase } from "@/domain/logistics/application/use-cases/recipient/register-recipient";
 import { Public } from "@/infra/auth/public";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const registerRecipientSchema = z.object({
   address: z.string(),
@@ -19,10 +20,32 @@ const registerRecipientSchema = z.object({
 
 type RegisterRecipientSchema = z.infer<typeof registerRecipientSchema>
 
+@ApiTags("Recipients")
+@ApiBearerAuth()
 @Controller()
 export class RegisterRecipientController {
   constructor(private registerRecipientUseCase: RegisterRecipientUseCase) {}
 
+  @ApiOperation({ summary: "Register recipient" })
+  @ApiBody({ description: "Register recipient", schema: {
+    example: {
+      address: "Rua da Consolação, 1000",
+      city: "São Paulo",
+      country: "Brazil",
+      email: "johndoe@example.com",
+      name: "John Doe",
+      password: "123456",
+      phone: "+5511987654321",
+      state: "SP",
+      zip: "01302-000"
+    }
+  }})
+  @ApiResponse({ status: 201, description: "Recipient successfully registered", schema: {
+    example: {
+      recipientId: "0192da91-46b4-7999-b60e-82d7a0f2178f"
+    }
+  }})
+  @ApiBadRequestResponse({ description: "Bad request" })
   @Post("/recipients")
   @HttpCode(201)
   @Public()
