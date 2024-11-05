@@ -4,7 +4,9 @@ import { SendNotificationUseCase } from "../application/use-cases/send-notificat
 import { DeliverersRepository } from "@/domain/logistics/application/repositories/deliverers-repository";
 import { OrderAwaitingPickup } from "@/domain/logistics/enterprise/events/order-awaiting-pickup";
 import { OrderReturnedEvent } from "@/domain/logistics/enterprise/events/order-returned-event";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class OnOrderReturned implements EventHandler {
   constructor(
     private deliverersRepository: DeliverersRepository,

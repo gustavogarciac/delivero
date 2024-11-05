@@ -22,4 +22,4 @@
 [X] - Para marcar uma encomenda como entregue é obrigatório o envio de uma foto
 [X] - Somente o entregador que retirou a encomenda pode marcar ela como entregue
 [X] - Somente o admin pode alterar a senha de um usuário
-[ ] - Não deve ser possível um entregador listar as encomendas de outro entregador
+[X] - Não deve ser possível um entregador listar as encomendas de outro entregador
