@@ -6,6 +6,8 @@ import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors()
+
   const config = new DocumentBuilder()
     .setTitle("API Docs (Delivero)")
     .setDescription("API Docs for Delivero")

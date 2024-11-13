@@ -24,7 +24,6 @@ export function makeAdmin(
       ...overrideAdminProps
     },
     {
-      cpf: Cpf.create(),
       name: faker.person.fullName(),
       password: faker.internet.password(),
       email: faker.internet.email(),

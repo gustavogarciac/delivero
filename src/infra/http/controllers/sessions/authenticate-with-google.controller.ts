@@ -49,7 +49,7 @@ export class AuthenticateWithGoogleController {
     const data = result.value;
 
     if(data.accessToken === null) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/sign-up?status=${data.status}&email=${email}&firstName=${firstName}&lastName=${lastName}&picture=${picture}`);
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/sign-up/google?status=${data.status}&email=${email}&firstName=${firstName}&lastName=${lastName}&picture=${picture}`);
     }
 
     return { accessToken: data.accessToken, status: data.status, profile: req.user };

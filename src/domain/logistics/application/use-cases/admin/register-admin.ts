@@ -9,9 +9,8 @@ import { Status } from "@/domain/logistics/enterprise/entities/user"
 import { Injectable } from "@nestjs/common"
 
 interface RegisterAdminUseCaseRequest {
-  cpf: string
   name: string
-  password: string
+  password?: string | null
   email: string
   phone: string
 }
@@ -23,31 +22,23 @@ export class RegisterAdminUseCase {
   constructor(private adminsRepository: AdminsRepository, private hasher: Hasher) {}
 
   async execute({
-    cpf,
     name,
     password,
     email,
     phone
   } : RegisterAdminUseCaseRequest): Promise<RegisterAdminUseCaseResponse> {
-    const cpfIsValid = Cpf.isValid(cpf)
-
-    if(!cpfIsValid) {
-      return left(new BadRequestError)
-    }
-
     // TODO: Validade if cpf is already registered in the system overall
-    const adminWithExistingCpf = await this.adminsRepository.findByCpf(cpf)
+    const adminWithExistingEmail = await this.adminsRepository.findByEmail(email)
 
-    if(adminWithExistingCpf) {
+    if(adminWithExistingEmail) {
       return left(new BadRequestError)
     }
 
     const admin = Admin.create({
       permissions: Permissions.admin(),
     }, {
-      cpf: Cpf.create(cpf),
       name,
-      password: await this.hasher.hash(password),
+      password: password ? await this.hasher.hash(password) : null,
       status: Status.ACTIVE,
       email,
       phone,

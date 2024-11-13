@@ -17,10 +17,9 @@ describe("Create Deliverer Use Case", async () => {
   })
 
   it("should be able to create a deliverer", async () => {
-    const deliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055") })
+    const deliverer = makeDeliverer({}, {})
 
     const result = await sut.execute({
-      cpf: deliverer.cpf.value,
       email: deliverer.email,
       latitude: deliverer.geo.latitude,
       longitude: deliverer.geo.longitude,
@@ -34,14 +33,13 @@ describe("Create Deliverer Use Case", async () => {
     expect(delivererRepository.items.length).toEqual(1)
   })
 
-  it("should not create a deliverer with an existing cpf", async () => {
-    const deliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055") })
-    const secondDeliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055") })
+  it("should not create a deliverer with an existing email", async () => {
+    const deliverer = makeDeliverer({}, { email: "first@deliverer.com" })
+    const secondDeliverer = makeDeliverer({}, { email: "first@deliverer.com" })
 
     delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: secondDeliverer.cpf.value,
       email: secondDeliverer.email,
       latitude: secondDeliverer.geo.latitude,
       longitude: secondDeliverer.geo.longitude,
@@ -57,7 +55,6 @@ describe("Create Deliverer Use Case", async () => {
 
   it("should hash the password before saving", async () => {
     const result = await sut.execute({
-      cpf: "40171993055",
       name: "John Doe",
       password: "password",
       email: "john@doe.com",

@@ -1,5 +1,5 @@
 import { AuthenticateDelivererUseCase } from "@/domain/logistics/application/use-cases/deliverer/authenticate-deliverer";
-import { BadRequestException, Body, Controller, HttpCode, Post, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, HttpCode, Post, UnauthorizedException, UsePipes } from "@nestjs/common";
 import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 import { z } from "zod";
 import { BadRequestError } from "@/core/errors/bad-request-error";
@@ -7,7 +7,7 @@ import { Public } from "@/infra/auth/public";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const authenticateDelivererSchema = z.object({
-  cpf: z.string(),
+  email: z.string().email(),
   password: z.string().min(6),
 })
 
@@ -26,10 +26,10 @@ export class AuthenticateDelivererController {
   @ApiBody({ description: "Data needed to authenticate a deliverer", schema: {
     type: "object",
     properties: {
-      cpf: { type: "string", example: "123.456.789-00", description: "CPF of the deliverer" },
+      email: { type: "string", example: "john@doe.com", description: "E-mail of the deliverer" },
       password: { type: "string", example: "password123", minLength: 6, description: "Password for the deliverer" }
     },
-    required: ["cpf", "password"]
+    required: ["email", "password"]
   }})
   @ApiResponse({ status: 201, description: 'Deliverer authenticated', schema: {
     example: {
@@ -39,19 +39,18 @@ export class AuthenticateDelivererController {
   async handle(
     @Body() body: AuthenticateDelivererSchema
   ) {
-    const { cpf, password } = body
+    const { email, password } = body
 
     const result = await this.authenticateDelivererUseCase.execute({
-      cpf,
+      email,
       password
     })
-
 
     if(result.isLeft()) {
       const error = result.value
 
       if(error instanceof BadRequestError) {
-        throw new BadRequestException('Invalid credentials')
+        throw new BadRequestException(error.message)
       }
 
       throw new BadRequestException()

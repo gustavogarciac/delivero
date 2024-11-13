@@ -37,8 +37,7 @@ model Deliverer {
   id              String     @id @default(uuid())
   name            String
   email           String     @unique
-  password        String
-  cpf             String     @unique
+  password        String?
   phone           String
   rating          Int        @default(5)
   deliveriesCount Int        @default(0) @map("deliveries_count")
@@ -69,17 +68,17 @@ model DelivererToken {
 }
 
 model Recipient {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   name     String
   email    String
   phone    String
   address  String
-  password String
+  password String?
   city     String
   state    String
   zip      String
   country  String
-  role     Role   @default(RECIPIENT)
+  role     Role    @default(RECIPIENT)
 
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -102,13 +101,12 @@ model RecipientToken {
 }
 
 model Admin {
-  id       String @id @default(uuid())
-  cpf      String @unique
+  id       String  @id @default(uuid())
   name     String
-  email    String @unique
-  password String
+  email    String  @unique
+  password String?
   phone    String
-  role     Role   @default(ADMIN)
+  role     Role    @default(ADMIN)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

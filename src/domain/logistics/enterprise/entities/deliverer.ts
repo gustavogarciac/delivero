@@ -103,6 +103,7 @@ export class Deliverer extends User {
   static create(delivererProps: DelivererProps, userProps: UserProps, id?: UniqueEntityId) {
     return new Deliverer({
       ...delivererProps,
+      geo: Geolocalization.create({ latitude: 0, longitude: 0 }),
       createdAt: new Date(),
       updatedAt: null
     }, {

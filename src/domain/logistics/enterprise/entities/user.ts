@@ -11,8 +11,7 @@ export enum Status {
 export interface UserProps {
   name: string;
   email: string;
-  password: string;
-  cpf: Cpf;
+  password: string | null;
   phone: string;
   registeredAt?: Date | null;
   updatedAt?: Date | null;
@@ -31,12 +30,8 @@ export abstract class User extends Entity<UserProps> {
     return this.props.email;
   }
 
-  get password() {
+  get password(): string | undefined | null {
     return this.props.password;
-  }
-
-  get cpf() {
-    return this.props.cpf;
   }
 
   get phone() {
@@ -78,11 +73,6 @@ export abstract class User extends Entity<UserProps> {
 
   set password(password: string) {
     this.props.password = password;
-    this.touch();
-  }
-
-  set cpf(cpf: Cpf) {
-    this.props.cpf = cpf;
     this.touch();
   }
 

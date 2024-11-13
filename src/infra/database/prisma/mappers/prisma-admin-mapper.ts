@@ -3,7 +3,6 @@ import { Admin } from "@/domain/logistics/enterprise/entities/admin";
 import { Permissions } from "@/domain/logistics/enterprise/entities/permissions/admin";
 import { Role } from "@/domain/logistics/enterprise/entities/role";
 import { Status } from "@/domain/logistics/enterprise/entities/user";
-import { Cpf } from "@/domain/logistics/enterprise/entities/value-objects/cpf";
 import { Admin as PrismaAdmin, Prisma } from "@prisma/client";
 
 export class PrismaAdminMapper {
@@ -13,7 +12,6 @@ export class PrismaAdminMapper {
         permissions: Permissions.admin(),
       }, 
       {
-        cpf: Cpf.create(prismaAdmin.cpf),
         email: prismaAdmin.email,
         name: prismaAdmin.name,
         password: prismaAdmin.password,
@@ -32,7 +30,6 @@ export class PrismaAdminMapper {
   static toPersistence(admin: Admin): Prisma.AdminCreateInput {      
     return {
       id: admin.id.toString(),
-      cpf: admin.cpf.value,
       password: admin.password,
       email: admin.email,
       name: admin.name,

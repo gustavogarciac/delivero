@@ -1,6 +1,5 @@
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Recipient } from "@/domain/logistics/enterprise/entities/recipient";
-import { Vehicle, VehicleType } from "@/domain/logistics/enterprise/entities/vehicle";
 import { Order, Recipient as PrismaRecipient, Role } from "@prisma/client";
 import { PrismaOrderMapper } from "./prisma-order-mapper";
 

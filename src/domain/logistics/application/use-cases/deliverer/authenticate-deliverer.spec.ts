@@ -20,12 +20,12 @@ describe("Authenticate Deliverer Use Case", async () => {
   })
 
   it("should be able to authenticate a delivery man", async () => {
-    const deliverer = makeDeliverer({}, { cpf: Cpf.create("40171993055"), password: await fakeHasher.hash("password") })
+    const deliverer = makeDeliverer({}, { email: "john@doe.com", password: await fakeHasher.hash("password") })
 
     await delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: deliverer.cpf.value,
+      email: deliverer.email,
       password: "password"
     })
 
@@ -42,7 +42,7 @@ describe("Authenticate Deliverer Use Case", async () => {
     await delivererRepository.items.push(deliverer)
 
     const result = await sut.execute({
-      cpf: deliverer.cpf.value,
+      email: deliverer.email,
       password: "wrong-password"
     })
 

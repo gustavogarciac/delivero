@@ -8,7 +8,6 @@ export class DelivererPresenter {
       id: deliverer.id.toString(),
       name: deliverer.name,
       email: deliverer.email,
-      cpf: deliverer.cpf.value,
       phone: deliverer.phone,
       rating: deliverer.rating,
       deliveriesCount: deliverer.deliveriesCount,

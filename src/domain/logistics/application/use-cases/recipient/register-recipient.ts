@@ -13,7 +13,7 @@ interface RegisterRecipientUseCaseRequest {
   name: string
   phone: string
   state: string
-  password: string
+  password: string | null
   zip: string
 }
 
@@ -52,10 +52,12 @@ export class RegisterRecipientUseCase {
       zip,
     })
 
-    const hashedPassword = await this.hasher.hash(password)
+    if(password !== null) {
+      const hashedPassword = await this.hasher.hash(password)
+  
+      recipient.password = hashedPassword
+    }
 
-    recipient.password = hashedPassword
-    
     await this.recipientsRepository.create(recipient)
 
     return right({ recipient })

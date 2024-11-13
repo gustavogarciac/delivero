@@ -8,7 +8,6 @@ import { Public } from "@/infra/auth/public";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const registerAdminSchema = z.object({
-  cpf: z.string(),
   email: z.string().email(),
   name: z.string(),
   password: z.string().min(6).max(200),
@@ -37,7 +36,6 @@ export class RegisterAdminController {
     schema: {
       type: "object",
       properties: {
-        cpf: { type: "string", example: "123.456.789-00", description: "CPF of the admin" },
         email: { type: "string", example: "admin@example.com", description: "Email of the admin" },
         name: { type: "string", example: "Admin Name", description: "Name of the admin" },
         password: { type: "string", example: "password123", minLength: 6, maxLength: 200, description: "Password for the admin" },
@@ -51,10 +49,9 @@ export class RegisterAdminController {
   async handle(
     @Body() body: RegisterAdminSchema
   ) {
-    const { cpf, email, name, password, phone } = body
+    const { email, name, password, phone } = body
 
     const result = await this.registerAdminUseCase.execute({ 
-      cpf,
       email,
       name,
       password,

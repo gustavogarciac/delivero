@@ -36,7 +36,7 @@ describe("Create Deliverer (e2e)", () => {
 
     const deliverer = await prismaService.deliverer.findFirst({
       where: {
-        cpf: "207.831.244-49"
+        email: "jane@email.com"
       }
     })
 

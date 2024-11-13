@@ -1,8 +1,8 @@
 import { BadRequestError } from "@/core/errors/bad-request-error"
-import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { FakeHasher } from "test/cryptography/fake-hasher"
 import { RegisterAdminUseCase } from "./register-admin"
 import { InMemoryAdminsRepository } from "test/repositories/in-memory-admins-repository"
+import { Cpf } from "../../../enterprise/entities/value-objects/cpf"
 import { makeAdmin } from "test/factories/make-admin"
 import { DeliverersRepository } from "../../repositories/deliverers-repository"
 
@@ -19,10 +19,9 @@ describe("Create Admin Use Case", async () => {
   })
 
   it("should be able to create a admin", async () => {
-    const admin = makeAdmin({}, { cpf: Cpf.create("401.719.930-55") })
+    const admin = makeAdmin({}, {})
 
     const result = await sut.execute({
-      cpf: admin.cpf.value,
       email: admin.email,
       name: admin.name,
       password: admin.password,
@@ -34,14 +33,13 @@ describe("Create Admin Use Case", async () => {
     expect(adminsRepository.items.length).toEqual(1)
   })
 
-  it("should not create a admin with an existing cpf", async () => {
-    const admin = makeAdmin({}, { cpf: Cpf.create("40171993055") })
-    const secondAdmin = makeAdmin({}, { cpf: Cpf.create("40171993055") })
-
+  it("should not create a admin with an existing email", async () => {
+    const admin = makeAdmin({}, { email: "first@admin.com"})
+    const secondAdmin = makeAdmin({}, { email: "first@admin.com"})
+    
     adminsRepository.items.push(admin)
 
     const result = await sut.execute({
-      cpf: secondAdmin.cpf.value,
       email: secondAdmin.email,
       name: secondAdmin.name,
       password: secondAdmin.password,
@@ -55,7 +53,6 @@ describe("Create Admin Use Case", async () => {
 
   it("should hash the password before saving", async () => {
     const result = await sut.execute({
-      cpf: "40171993055",
       name: "John Doe",
       password: "password",
       email: "john@doe.com",

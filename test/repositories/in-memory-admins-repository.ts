@@ -8,11 +8,11 @@ import { Status } from "@/domain/logistics/enterprise/entities/user";
 export class InMemoryAdminsRepository implements AdminsRepository {
   constructor(private deliverersRepository: DeliverersRepository) {}
   public items: Admin[] = []
-  
-  async findByCpf(cpf: string): Promise<Admin | null> {
-    const admin = this.items.find((admin) => admin.cpf.value === cpf)
 
-    if(!admin) return null
+  async findByEmail(email: string): Promise<Admin | null> {
+    const admin = this.items.find((admin) => admin.email === email)
+
+    if (!admin) return null
 
     return admin
   }

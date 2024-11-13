@@ -8,7 +8,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error"
 import { Injectable } from "@nestjs/common"
 
 interface AuthenticateDelivererUseCaseRequest {
-  cpf: string
+  email: string
   password: string
 }
 
@@ -23,19 +23,19 @@ export class AuthenticateDelivererUseCase {
   ) {}
 
   async execute({
-    cpf,
+    email,
     password
   } : AuthenticateDelivererUseCaseRequest): Promise<AuthenticateDelivererUseCaseResponse> {
-    const deliverer = await this.deliverersRepository.findByCpf(cpf)
+    const deliverer = await this.deliverersRepository.findByEmail(email)
 
     if(!deliverer) {
-      return left(new BadRequestError)
+      return left(new BadRequestError("Invalid credentials"))
     }
 
-    const passwordMatch = await this.hasher.compare(password, deliverer.password)
+    const passwordMatch = await this.hasher.compare(password, deliverer.password!)
 
     if (!passwordMatch) {
-      return left(new BadRequestError)
+      return left(new BadRequestError("Invalid credentials"))
     }
     
     const accessToken = await this.encrypter.encrypt({

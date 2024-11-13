@@ -8,23 +8,6 @@ import { PrismaDelivererMapper } from "../mappers/prisma-deliverer-mapper";
 @Injectable()
 export class PrismaDeliverersRepository implements DeliverersRepository {
   constructor(private prisma: PrismaService) {}
-  async findByCpf(cpf: string): Promise<Deliverer | null> {
-    const deliverer = await this.prisma.deliverer.findUnique({
-      where: {
-        cpf
-      },
-      include: {
-        orders: true,
-        vehicle: true
-      }
-    })
-
-    if(!deliverer) {
-      return null
-    }
-
-    return PrismaDelivererMapper.toDomain(deliverer)
-  }
   async findById(id: string): Promise<Deliverer | null> {
     const deliverer = await this.prisma.deliverer.findUnique({
       where: {

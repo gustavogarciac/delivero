@@ -5,6 +5,7 @@ import { BadRequestError } from "@/core/errors/bad-request-error";
 import { OrderPresenter } from "../../presenters/order-presenter";
 import { GetOrdersUseCase } from "@/domain/logistics/application/use-cases/orders/get-orders";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { Public } from "@/infra/auth/public";
 
 const getOrdersQuerySchema = z.object({
   page: z.coerce.number().default(1),
@@ -20,7 +21,7 @@ type GetOrdersQuerySchema = z.infer<typeof getOrdersQuerySchema>
 @Controller()
 export class GetOrdersController {
   constructor(private getOrdersUseCase: GetOrdersUseCase) {}
-
+  @Public()
   @ApiOperation({ summary: "Get orders" })
   @ApiQuery({ name: "page", description: "Page", type: Number, required: false })
   @ApiQuery({ name: "perPage", description: "Items per page", type: Number, required: false })

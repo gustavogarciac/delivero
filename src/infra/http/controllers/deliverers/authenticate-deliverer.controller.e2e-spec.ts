@@ -6,7 +6,6 @@ import { DatabaseModule } from "@/infra/database/database.module"
 import request from "supertest"
 import { PrismaService } from "@/infra/database/prisma/prisma.service"
 import { hash } from "bcryptjs"
-import { Cpf } from "@/domain/logistics/enterprise/entities/value-objects/cpf"
 
 describe("Authenticate Deliverer (e2e)", () => {
   let app: INestApplication
@@ -26,10 +25,10 @@ describe("Authenticate Deliverer (e2e)", () => {
   })
 
   test("[POST] /sessions/deliverers", async () => {
-    await delivererFactory.makePrismaDeliverer({}, { cpf: Cpf.create("207.831.244-49"), password: await hash("123456789", 8) })
+    await delivererFactory.makePrismaDeliverer({}, { email: "testing@email.com", password: await hash("123456789", 8) })
 
     const response = await request(app.getHttpServer()).post("/sessions/deliverers").send({
-      cpf: "207.831.244-49",
+      email: "testing@email.com",
       password: "123456789"
     })
 

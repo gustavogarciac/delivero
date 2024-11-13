@@ -8,7 +8,6 @@ export async function seed() {
 
   await prisma.deliverer.create({
     data: {
-      cpf: '04564349090',
       name: 'John Doe',
       email: "johndoe@email.com",
       latitude: 0,

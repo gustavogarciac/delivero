@@ -28,7 +28,6 @@ export class PrismaDelivererMapper {
       orders: prismaDeliverer.orders.map(PrismaOrderMapper.toDomain),
       vehicle: PrismaVehicleMapper.toDomain(prismaDeliverer.vehicle[0]) ?? null
     }, {
-      cpf: Cpf.create(prismaDeliverer.cpf),
       email: prismaDeliverer.email,
       name: prismaDeliverer.name,
       password: prismaDeliverer.password,
@@ -44,7 +43,6 @@ export class PrismaDelivererMapper {
 
   static toPersistence(deliverer: Deliverer): Prisma.DelivererUncheckedCreateInput {
     return {
-      cpf: deliverer.cpf.value,
       deliveriesCount: deliverer.deliveriesCount,
       email: deliverer.email,
       isAvailable: deliverer.isAvailable,

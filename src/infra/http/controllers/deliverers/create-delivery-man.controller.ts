@@ -7,13 +7,10 @@ import { CreateDelivererUseCase } from "@/domain/logistics/application/use-cases
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 const createDelivererSchema = z.object({
-  cpf: z.string(),
   name: z.string(),
-  password: z.string(),
+  password: z.string().nullable(),
   email: z.string(),
   phone: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
 })
 
 export type CreateDelivererSchema = z.infer<typeof createDelivererSchema>
@@ -34,13 +31,10 @@ export class CreateDelivererController {
   @ApiBody({ description: 'Create Deliverer', schema: {
     type: 'object',
     properties: {
-      cpf: { type: 'string', example: '12345678901' },
       name: { type: 'string', example: 'John Doe' },
-      password: { type: 'string', example: '123456' },
+      password: { type: 'string', example: '123456', nullable: true },
       email: { type: 'string', example: 'johndoe@example.com'},
       phone: { type: 'string', example: '12345678901' },
-      latitude: { type: 'number', example: -23.5505199 },
-      longitude: { type: 'number', example: -46.6333094 }
     }
   }})
   @Post("/deliverers")
@@ -51,22 +45,18 @@ export class CreateDelivererController {
     @Body() body: CreateDelivererSchema
   ) {
     const { 
-      cpf,
       name,
       password,
       email,
-      latitude,
-      longitude,
       phone
      } = body
 
     const result = await this.createDelivererUseCase.execute({
-      cpf,
+      latitude: 0,
+      longitude: 0,
       name,
       password,
       email,
-      latitude,
-      longitude,
       phone,
     })
 
